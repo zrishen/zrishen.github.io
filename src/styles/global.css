@@ -29,66 +29,67 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 主容器 */
+/* 主容器：到屏幕左右边缘边距为 15px，上下边距 15px */
 .container {
-  max-width: 1360px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 15px;
 }
 
-/* 三栏布局网格 */
+/* 三栏布局网格：卡片与卡片之间的边距为 15px */
 .three-col-layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 300px;
-  gap: 28px;
+  gap: 15px;
   align-items: start;
 }
 
-/* 左侧栏：黏性定位 */
+/* 左侧栏：黏性定位，距离视口顶部 15px */
 .col-left {
   position: sticky;
-  top: 28px;
+  top: 15px;
 }
 
-/* 中间栏：主要内容流 */
+/* 中间栏：主要内容流，卡片垂直间距 15px */
 .col-middle {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-/* 右侧栏：个人卡片黏性定位 */
+/* 右侧栏：个人卡片黏性定位，距离视口顶部 15px */
 .col-right {
   position: sticky;
-  top: 28px;
+  top: 15px;
 }
 
 /* 通用 Section 卡片 */
 .section {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 24px;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 0; /* 统由 parent flex/grid gap: 15px 控制 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  scroll-margin-top: 28px;
+  scroll-margin-top: 15px;
 }
 
 .section-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #0f172a;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 18px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 
 .section-title i {
   color: var(--primary);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
 
 /* 胶囊标签 */
@@ -107,32 +108,31 @@ body {
 @media (max-width: 1119px) {
   .three-col-layout {
     grid-template-columns: 200px minmax(0, 1fr);
-    gap: 24px;
+    gap: 15px;
   }
   .col-right {
     position: static;
     grid-column: 2;
     order: -1; /* 个人信息显示在中栏上方 */
-    margin-bottom: 24px;
   }
 }
 
 /* 响应式断点：小屏手机端 (< 768px) */
 @media (max-width: 767px) {
   .container {
-    padding: 16px 12px;
+    padding: 15px;
   }
   .three-col-layout {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
   }
   .col-left {
     position: sticky;
     top: 0;
     z-index: 50;
     background: var(--bg-page);
-    padding: 8px 0;
+    padding: 6px 0;
   }
   .col-right {
     position: static;
