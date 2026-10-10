@@ -8,7 +8,7 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-<section class="section" id="projects">
+<div class="section-block" id="projects">
   <h2 class="section-title">
     <i class="fa-solid fa-flask"></i> 科研与实践项目
   </h2>
@@ -24,7 +24,7 @@ const { projects } = Astro.props;
       <div class="item-desc">{project.description}</div>
     </div>
   ))}
-</section>
+</div>
 
 <style>
   .item {

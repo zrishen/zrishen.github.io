@@ -18,7 +18,7 @@ const articles = [
 ];
 ---
 
-<section class="section" id="articles">
+<div class="section-block" id="articles">
   <div class="section-title-wrapper">
     <h2 class="section-title">
       <i class="fa-solid fa-newspaper"></i> 文章精选
@@ -38,7 +38,7 @@ const articles = [
       </article>
     ))}
   </div>
-</section>
+</div>
 
 <style>
   .section-title-wrapper {
@@ -47,7 +47,7 @@ const articles = [
     align-items: baseline;
     border-bottom: 1px solid var(--border);
     margin-bottom: 18px;
-    padding-bottom: 12px;
+    padding-bottom: 10px;
   }
 
   .section-title-wrapper .section-title {
@@ -64,7 +64,7 @@ const articles = [
   .article-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
 
   .article-card {

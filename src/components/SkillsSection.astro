@@ -8,7 +8,7 @@ interface Props {
 const { skills } = Astro.props;
 ---
 
-<section class="section" id="skills">
+<div class="section-block" id="skills">
   <h2 class="section-title">
     <i class="fa-solid fa-layer-group"></i> 专业技能
   </h2>
@@ -24,13 +24,13 @@ const { skills } = Astro.props;
       </div>
     ))}
   </div>
-</section>
+</div>
 
 <style>
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
   }
 
   .skill-card {

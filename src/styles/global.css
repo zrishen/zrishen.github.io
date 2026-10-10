@@ -29,14 +29,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 主容器：到屏幕左右边缘边距为 15px，上下边距 15px */
+/* 主容器：铺满屏幕宽度，严格保持到边缘边距 15px */
 .container {
-  max-width: 1440px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   padding: 15px;
 }
 
-/* 三栏布局网格：卡片与卡片之间的边距为 15px */
+/* 三栏布局网格：卡片与卡片之间间距严格为 15px */
 .three-col-layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 300px;
@@ -50,12 +51,20 @@ body {
   top: 15px;
 }
 
-/* 中间栏：主要内容流，卡片垂直间距 15px */
+/* 中间栏：主要内容流 */
 .col-middle {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+}
+
+/* 中间栏单个整体大卡片 */
+.main-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 /* 右侧栏：个人卡片黏性定位，距离视口顶部 15px */
@@ -64,32 +73,35 @@ body {
   top: 15px;
 }
 
-/* 通用 Section 卡片 */
-.section {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 0; /* 统由 parent flex/grid gap: 15px 控制 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  scroll-margin-top: 15px;
+/* 单卡片内部的章节小节（去除多余外框，作为卡片内区块） */
+.section-block {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 25px;
+}
+
+.section-block:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .section-title {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #0f172a;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 
 .section-title i {
   color: var(--primary);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 /* 胶囊标签 */
@@ -115,12 +127,15 @@ body {
     grid-column: 2;
     order: -1; /* 个人信息显示在中栏上方 */
   }
+  .main-card {
+    padding: 24px 20px;
+  }
 }
 
 /* 响应式断点：小屏手机端 (< 768px) */
 @media (max-width: 767px) {
   .container {
-    padding: 15px;
+    padding: 15px 10px;
   }
   .three-col-layout {
     display: flex;
@@ -132,7 +147,7 @@ body {
     top: 0;
     z-index: 50;
     background: var(--bg-page);
-    padding: 6px 0;
+    padding: 4px 0;
   }
   .col-right {
     position: static;
@@ -140,5 +155,8 @@ body {
   }
   .col-middle {
     order: 1;
+  }
+  .main-card {
+    padding: 20px 16px;
   }
 }

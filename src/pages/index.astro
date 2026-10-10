@@ -16,22 +16,24 @@ import { siteData } from '../data/profile';
   description={siteData.profile.bio}
 >
   <div class="three-col-layout" id="overview">
-    <!-- 左栏：选项按钮与目录导航 -->
+    <!-- 左栏：选项按钮与目录导航卡片 -->
     <aside class="col-left">
       <LeftNav />
     </aside>
 
-    <!-- 中栏：主要文章与履历内容流 -->
+    <!-- 中栏：唯一一个内容大卡片，内部包含文章、项目、履历等小节 -->
     <main class="col-middle">
-      <ArticlesSection />
-      <ProjectsSection projects={siteData.projects} />
-      <EducationSection education={siteData.education} />
-      <SkillsSection skills={siteData.skills} />
-      <AwardsSection awards={siteData.awards} />
-      <Footer copyright={siteData.footer.copyright} />
+      <div class="main-card">
+        <ArticlesSection />
+        <ProjectsSection projects={siteData.projects} />
+        <EducationSection education={siteData.education} />
+        <SkillsSection skills={siteData.skills} />
+        <AwardsSection awards={siteData.awards} />
+        <Footer copyright={siteData.footer.copyright} />
+      </div>
     </main>
 
-    <!-- 右栏：个人信息介绍名片 -->
+    <!-- 右栏：个人信息介绍名片卡片 -->
     <aside class="col-right">
       <ProfileSidebar profile={siteData.profile} />
     </aside>

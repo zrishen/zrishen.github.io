@@ -8,7 +8,7 @@ interface Props {
 const { education } = Astro.props;
 ---
 
-<section class="section" id="education">
+<div class="section-block" id="education">
   <h2 class="section-title">
     <i class="fa-solid fa-graduation-cap"></i> 教育背景
   </h2>
@@ -21,7 +21,7 @@ const { education } = Astro.props;
       <div class="item-subtitle">{item.major} · {item.honorOrGpa}</div>
     </div>
   ))}
-</section>
+</div>
 
 <style>
   .item {

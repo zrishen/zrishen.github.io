@@ -8,7 +8,7 @@ interface Props {
 const { awards } = Astro.props;
 ---
 
-<section class="section" id="awards">
+<div class="section-block" id="awards">
   <h2 class="section-title">
     <i class="fa-solid fa-trophy"></i> 荣誉与竞赛奖项
   </h2>
@@ -20,7 +20,7 @@ const { awards } = Astro.props;
       </li>
     ))}
   </ul>
-</section>
+</div>
 
 <style>
   .award-list {
@@ -31,7 +31,7 @@ const { awards } = Astro.props;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px dashed #f1f5f9;
     font-size: 0.92rem;
   }
