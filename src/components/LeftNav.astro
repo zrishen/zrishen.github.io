@@ -1,0 +1,134 @@
+---
+const navItems = [
+  { id: "overview", label: "全部总览", icon: "fa-solid fa-compass" },
+  { id: "articles", label: "文章精选", icon: "fa-solid fa-newspaper" },
+  { id: "projects", label: "科研与实践", icon: "fa-solid fa-flask" },
+  { id: "education", label: "教育背景", icon: "fa-solid fa-graduation-cap" },
+  { id: "skills", label: "专业技能", icon: "fa-solid fa-layer-group" },
+  { id: "awards", label: "荣誉奖项", icon: "fa-solid fa-trophy" },
+];
+---
+
+<nav class="left-nav-card">
+  <div class="nav-header">
+    <i class="fa-solid fa-bars-staggered"></i>
+    <span>导航目录</span>
+  </div>
+  <ul class="nav-list">
+    {navItems.map((item) => (
+      <li>
+        <a href={`#${item.id}`} class="nav-btn" data-target={item.id}>
+          <i class={item.icon}></i>
+          <span>{item.label}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // 监听点击高亮与滚动联动
+  const navLinks = document.querySelectorAll('.nav-btn');
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      navLinks.forEach((l) => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+</script>
+
+<style>
+  .left-nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .nav-header {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 12px 14px 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-header i {
+    color: var(--primary);
+  }
+
+  .nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn i {
+    font-size: 0.95rem;
+    width: 18px;
+    text-align: center;
+    color: var(--text-light);
+    transition: color 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+  }
+
+  .nav-btn:hover i {
+    color: var(--primary);
+  }
+
+  .nav-btn.active {
+    background: var(--tag-bg);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .nav-btn.active i {
+    color: var(--primary);
+  }
+
+  @media (max-width: 767px) {
+    .left-nav-card {
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+    .nav-header {
+      display: none;
+    }
+    .nav-list {
+      flex-direction: row;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 8px;
+      padding-bottom: 2px;
+    }
+    .nav-btn {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import { Image } from 'astro:assets';
+import type { ProfileInfo } from '../data/types';
+import profilePhoto from '../assets/photo.jpg';
+
+interface Props {
+  profile: ProfileInfo;
+}
+
+const { profile } = Astro.props;
+---
+
+<aside class="profile-sidebar-card">
+  <!-- 头像与基本名片 -->
+  <div class="avatar-wrapper">
+    <Image
+      src={profilePhoto}
+      alt={profile.name}
+      width={240}
+      height={300}
+      format="webp"
+      quality={85}
+      class="profile-avatar"
+      loading="eager"
+    />
+  </div>
+
+  <div class="profile-header-info">
+    <h1 class="profile-name">
+      {profile.name}
+      <span class="profile-en">| {profile.englishName}</span>
+    </h1>
+    <div class="profile-badge">
+      <i class={profile.titleIcon}></i> {profile.title}
+    </div>
+  </div>
+
+  <!-- 个人简述 -->
+  <p class="profile-bio">
+    {profile.bio}
+  </p>
+
+  <!-- 联系方式与外链 -->
+  <div class="contact-group">
+    {profile.contacts.map((contact) => (
+      contact.href ? (
+        <a
+          href={contact.href}
+          target={contact.isExternal ? "_blank" : undefined}
+          rel={contact.isExternal ? "noopener noreferrer" : undefined}
+          class="contact-link-item"
+        >
+          <i class={contact.icon}></i>
+          <span>{contact.text}</span>
+        </a>
+      ) : (
+        <div class="contact-link-item plain-item">
+          <i class={contact.icon}></i>
+          <span>{contact.text}</span>
+        </div>
+      )
+    ))}
+  </div>
+</aside>
+
+<style>
+  .profile-sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+
+  .profile-avatar {
+    width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border: 3px solid #ffffff;
+  }
+
+  .profile-header-info {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .profile-en {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-light);
+  }
+
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--tag-bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .profile-bio {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+    text-align: justify;
+  }
+
+  .contact-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .contact-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 8px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .contact-link-item i {
+    color: var(--primary);
+    width: 16px;
+    text-align: center;
+  }
+
+  .contact-link-item:hover {
+    background: var(--tag-bg);
+    color: var(--primary);
+    border-color: #bfdbfe;
+  }
+
+  .plain-item:hover {
+    background: #f8fafc;
+    color: var(--text-main);
+    border-color: #f1f5f9;
+  }
+
+  @media (max-width: 1119px) and (min-width: 768px) {
+    .profile-sidebar-card {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      text-align: left;
+    }
+    .profile-header-info {
+      text-align: left;
+    }
+    .profile-name {
+      justify-content: flex-start;
+    }
+    .avatar-wrapper {
+      margin-bottom: 0;
+    }
+    .profile-bio {
+      padding-bottom: 0;
+      border-bottom: none;
+      margin-bottom: 12px;
+    }
+  }
+</style>

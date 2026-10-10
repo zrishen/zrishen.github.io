@@ -1,0 +1,118 @@
+---
+// 文章/学术博客精选列表展示（支持嵌入在主页中栏）
+const articles = [
+  {
+    title: "多模态大模型在边缘计算环境下的轻量化推理与蒸馏实践",
+    date: "2026.03",
+    tag: "学术随笔",
+    readTime: "6 分钟",
+    summary: "探讨在算力受限的边缘嵌入式设备上，如何利用知识蒸馏与量化技术保持跨模态对齐表征的高效输出..."
+  },
+  {
+    title: "从卷积神经网络到 Vision Transformer：水稻病虫害细粒度分类演进",
+    date: "2025.11",
+    tag: "科研笔记",
+    readTime: "8 分钟",
+    summary: "记录国家级大创项目中，针对复杂田间背景下的微小病斑识别所做的算法优化与数据对齐方案..."
+  }
+];
+---
+
+<section class="section" id="articles">
+  <div class="section-title-wrapper">
+    <h2 class="section-title">
+      <i class="fa-solid fa-newspaper"></i> 文章精选
+    </h2>
+    <span class="article-count">共 {articles.length} 篇</span>
+  </div>
+
+  <div class="article-list">
+    {articles.map((item) => (
+      <article class="article-card">
+        <div class="article-meta">
+          <span class="article-tag">{item.tag}</span>
+          <span class="article-date">{item.date} · 预计阅读 {item.readTime}</span>
+        </div>
+        <h3 class="article-title">{item.title}</h3>
+        <p class="article-summary">{item.summary}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+  }
+
+  .section-title-wrapper .section-title {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .article-count {
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .article-card {
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .article-card:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .article-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--tag-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .article-date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  .article-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .article-summary {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+</style>

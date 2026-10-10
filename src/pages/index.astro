@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProfileHeader from '../components/ProfileHeader.astro';
-import EducationSection from '../components/EducationSection.astro';
+import LeftNav from '../components/LeftNav.astro';
+import ProfileSidebar from '../components/ProfileSidebar.astro';
+import ArticlesSection from '../components/ArticlesSection.astro';
 import ProjectsSection from '../components/ProjectsSection.astro';
+import EducationSection from '../components/EducationSection.astro';
 import SkillsSection from '../components/SkillsSection.astro';
 import AwardsSection from '../components/AwardsSection.astro';
 import Footer from '../components/Footer.astro';
@@ -13,10 +15,25 @@ import { siteData } from '../data/profile';
   title={`${siteData.profile.name} | ${siteData.profile.englishName}`}
   description={siteData.profile.bio}
 >
-  <ProfileHeader profile={siteData.profile} />
-  <EducationSection education={siteData.education} />
-  <ProjectsSection projects={siteData.projects} />
-  <SkillsSection skills={siteData.skills} />
-  <AwardsSection awards={siteData.awards} />
-  <Footer copyright={siteData.footer.copyright} />
+  <div class="three-col-layout" id="overview">
+    <!-- 左栏：选项按钮与目录导航 -->
+    <aside class="col-left">
+      <LeftNav />
+    </aside>
+
+    <!-- 中栏：主要文章与履历内容流 -->
+    <main class="col-middle">
+      <ArticlesSection />
+      <ProjectsSection projects={siteData.projects} />
+      <EducationSection education={siteData.education} />
+      <SkillsSection skills={siteData.skills} />
+      <AwardsSection awards={siteData.awards} />
+      <Footer copyright={siteData.footer.copyright} />
+    </main>
+
+    <!-- 右栏：个人信息介绍名片 -->
+    <aside class="col-right">
+      <ProfileSidebar profile={siteData.profile} />
+    </aside>
+  </div>
 </BaseLayout>
