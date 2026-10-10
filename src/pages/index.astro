@@ -3,10 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LeftNav from '../components/LeftNav.astro';
 import ProfileSidebar from '../components/ProfileSidebar.astro';
 import ArticlesSection from '../components/ArticlesSection.astro';
-import ProjectsSection from '../components/ProjectsSection.astro';
-import EducationSection from '../components/EducationSection.astro';
-import SkillsSection from '../components/SkillsSection.astro';
-import AwardsSection from '../components/AwardsSection.astro';
 import Footer from '../components/Footer.astro';
 import { siteData } from '../data/profile';
 ---
@@ -16,26 +12,22 @@ import { siteData } from '../data/profile';
   description={siteData.profile.bio}
 >
   <div class="three-col-layout" id="overview">
-    <!-- 左栏：选项按钮与目录导航卡片 -->
+    <!-- 左栏：文章分类与标签检索目录 -->
     <aside class="col-left">
       <LeftNav />
     </aside>
 
-    <!-- 中栏：唯一一个内容大卡片，内部包含文章、项目、履历等小节 -->
+    <!-- 中栏：纯粹的文章大卡片流 (支持内部平滑独立滚动) -->
     <main class="col-middle">
       <div class="main-card">
         <ArticlesSection />
-        <ProjectsSection projects={siteData.projects} />
-        <EducationSection education={siteData.education} />
-        <SkillsSection skills={siteData.skills} />
-        <AwardsSection awards={siteData.awards} />
         <Footer copyright={siteData.footer.copyright} />
       </div>
     </main>
 
-    <!-- 右栏：个人信息介绍名片卡片 -->
+    <!-- 右栏：完整学者/个人档案与经历名片 -->
     <aside class="col-right">
-      <ProfileSidebar profile={siteData.profile} />
+      <ProfileSidebar data={siteData} />
     </aside>
   </div>
 </BaseLayout>

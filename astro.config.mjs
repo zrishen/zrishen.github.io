@@ -6,5 +6,9 @@ export default defineConfig({
   base: '/',
   build: {
     format: 'file'
+  },
+  devToolbar: {
+    enabled: false
   }
 });
+

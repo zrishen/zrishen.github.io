@@ -1,95 +1,135 @@
 ---
-// 文章/学术博客精选列表展示（支持嵌入在主页中栏）
 const articles = [
   {
     title: "多模态大模型在边缘计算环境下的轻量化推理与蒸馏实践",
-    date: "2026.03",
-    tag: "学术随笔",
+    date: "2026.03.18",
+    category: "多模态与CV",
+    tags: ["多模态", "知识蒸馏", "边缘计算"],
     readTime: "6 分钟",
-    summary: "探讨在算力受限的边缘嵌入式设备上，如何利用知识蒸馏与量化技术保持跨模态对齐表征的高效输出..."
+    summary: "在算力与显存严格受限的边缘嵌入式设备（如 Jetson / RK3588）上部署大模型时，体积与延迟是核心瓶颈。本文结合解耦知识蒸馏机制与轻量网络设计，探讨如何保持视觉-文本跨模态表征对齐效果的同时，实现模型推理吞吐的大幅提升。"
   },
   {
-    title: "从卷积神经网络到 Vision Transformer：水稻病虫害细粒度分类演进",
-    date: "2025.11",
-    tag: "科研笔记",
+    title: "从 CNN 到 Vision Transformer：复杂农业场景下的病斑细粒度分类演进",
+    date: "2025.11.20",
+    category: "科研实践笔记",
+    tags: ["计算机视觉", "ViT", "国家级大创"],
     readTime: "8 分钟",
-    summary: "记录国家级大创项目中，针对复杂田间背景下的微小病斑识别所做的算法优化与数据对齐方案..."
+    summary: "回顾国家级大创项目《水稻病虫害自动识别》中的核心算法迭代历程：从传统的 Faster R-CNN、SSD 目标检测，到结合注意力机制的 Vision Transformer 细粒度分类。分析复杂田间野外光照与细小病斑背景下的精度瓶颈与落地部署经验。"
+  },
+  {
+    title: "DeepSeek 与 Qwen2.5 架构剖析：前沿大语言模型技术学习心得",
+    date: "2025.08.12",
+    category: "大语言模型",
+    tags: ["LLM", "DeepSeek", "Qwen2.5"],
+    readTime: "10 分钟",
+    summary: "深入研读 DeepSeek 及通义千问 Qwen2.5 开源技术报告，从 MoE 混合专家架构、长上下文注意力优化以及高效后训练对齐（SFT / DPO / RLHF）等核心维度梳理现代大语言模型的工程演进逻辑。"
   }
 ];
 ---
 
-<div class="section-block" id="articles">
-  <div class="section-title-wrapper">
-    <h2 class="section-title">
-      <i class="fa-solid fa-newspaper"></i> 文章精选
-    </h2>
-    <span class="article-count">共 {articles.length} 篇</span>
+<div class="article-stream">
+  <div class="stream-header">
+    <div class="header-main">
+      <h2 class="stream-title">文章与研究文稿</h2>
+      <span class="stream-subtitle">记录算法科研、多模态技术与工程落地思考</span>
+    </div>
+    <span class="stream-count">共 {articles.length} 篇</span>
   </div>
 
-  <div class="article-list">
+  <div class="article-cards">
     {articles.map((item) => (
-      <article class="article-card">
-        <div class="article-meta">
-          <span class="article-tag">{item.tag}</span>
-          <span class="article-date">{item.date} · 预计阅读 {item.readTime}</span>
+      <article class="article-post-card">
+        <div class="article-post-meta">
+          <span class="article-category">{item.category}</span>
+          <span class="article-dot">·</span>
+          <span class="article-date">{item.date}</span>
+          <span class="article-dot">·</span>
+          <span class="article-read-time">{item.readTime}</span>
         </div>
-        <h3 class="article-title">{item.title}</h3>
-        <p class="article-summary">{item.summary}</p>
+        <h3 class="article-post-title">
+          <a href="#">{item.title}</a>
+        </h3>
+        <p class="article-post-summary">
+          {item.summary}
+        </p>
+        <div class="article-post-footer">
+          <div class="post-tags">
+            {item.tags.map((t) => (
+              <span class="post-tag">#{t}</span>
+            ))}
+          </div>
+          <a href="#" class="read-more-link">
+            阅读全文 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
       </article>
     ))}
   </div>
 </div>
 
 <style>
-  .section-title-wrapper {
+  .article-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .stream-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 18px;
-    padding-bottom: 10px;
+    align-items: flex-end;
+    padding-bottom: 8px;
   }
 
-  .section-title-wrapper .section-title {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+  .stream-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
   }
 
-  .article-count {
-    font-size: 0.85rem;
+  .stream-subtitle {
+    font-size: 0.88rem;
     color: var(--text-light);
   }
 
-  .article-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  .stream-count {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    font-weight: 500;
   }
 
-  .article-card {
-    padding: 16px;
+  .article-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .article-post-card {
+    padding: 24px;
     background: #f8fafc;
     border: 1px solid #f1f5f9;
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
-  .article-card:hover {
-    border-color: #cbd5e1;
+  .article-post-card:hover {
     background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    transform: translateY(-2px);
   }
 
-  .article-meta {
+  .article-post-meta {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
   }
 
-  .article-tag {
-    font-size: 0.75rem;
+  .article-category {
     font-weight: 600;
     color: var(--primary);
     background: var(--tag-bg);
@@ -97,22 +137,69 @@ const articles = [
     border-radius: 4px;
   }
 
-  .article-date {
-    font-size: 0.8rem;
-    color: var(--text-light);
+  .article-dot {
+    color: #cbd5e1;
   }
 
-  .article-title {
-    font-size: 1.05rem;
-    font-weight: 600;
+  .article-post-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .article-post-title a {
     color: #1e293b;
-    margin-bottom: 6px;
-    line-height: 1.4;
+    text-decoration: none;
+    transition: color 0.2s;
   }
 
-  .article-summary {
-    font-size: 0.88rem;
+  .article-post-title a:hover {
+    color: var(--primary);
+  }
+
+  .article-post-summary {
+    font-size: 0.92rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    text-align: justify;
+  }
+
+  .article-post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .post-tag {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    background: #ffffff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #f1f5f9;
+  }
+
+  .read-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: gap 0.2s ease;
+  }
+
+  .read-more-link:hover {
+    gap: 9px;
+    color: var(--primary-hover);
   }
 </style>

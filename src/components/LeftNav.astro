@@ -1,60 +1,44 @@
 ---
-const navItems = [
-  { id: "overview", label: "全部总览", icon: "fa-solid fa-compass" },
-  { id: "articles", label: "文章精选", icon: "fa-solid fa-newspaper" },
-  { id: "projects", label: "科研与实践", icon: "fa-solid fa-flask" },
-  { id: "education", label: "教育背景", icon: "fa-solid fa-graduation-cap" },
-  { id: "skills", label: "专业技能", icon: "fa-solid fa-layer-group" },
-  { id: "awards", label: "荣誉奖项", icon: "fa-solid fa-trophy" },
+const categories = [
+  { id: "all", label: "全部文章", count: 3 },
+  { id: "multimodal", label: "多模态与CV", count: 2 },
+  { id: "llm", label: "大语言模型", count: 1 },
+  { id: "project-notes", label: "科研实践笔记", count: 1 }
+];
+
+const tags = [
+  "PyTorch", "知识蒸馏", "边缘计算", "Vision Transformer", "CLIP", "DeepSeek"
 ];
 ---
 
 <nav class="left-nav-card">
-  <div class="nav-header">
-    <i class="fa-solid fa-bars-staggered"></i>
-    <span>导航目录</span>
+  <!-- 文章分类目录（无分割横线） -->
+  <div class="nav-section-title">
+    <i class="fa-solid fa-folder-open"></i>
+    <span>文章分类</span>
   </div>
   <ul class="nav-list">
-    {navItems.map((item) => (
+    {categories.map((cat, idx) => (
       <li>
-        <a href={`#${item.id}`} class="nav-btn" data-target={item.id}>
-          <i class={item.icon}></i>
-          <span>{item.label}</span>
-        </a>
+        <button class={`nav-btn ${idx === 0 ? 'active' : ''}`} data-category={cat.id}>
+          <span class="cat-name">{cat.label}</span>
+          <span class="cat-count">{cat.count}</span>
+        </button>
       </li>
     ))}
   </ul>
+
+  <!-- 热门标签筛选（无分割横线） -->
+  <div class="nav-section-title" style="margin-top: 28px;">
+    <i class="fa-solid fa-tags"></i>
+    <span>核心标签</span>
+  </div>
+  <div class="tag-cloud">
+    {tags.map((tag) => (
+      <span class="filter-tag">#{tag}</span>
+    ))}
+  </div>
 </nav>
-
-<script>
-  // 监听点击，平滑滚动中栏内部 (.main-card)
-  const navLinks = document.querySelectorAll('.nav-btn');
-  const mainCard = document.querySelector('.main-card');
-
-  navLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      const targetId = link.getAttribute('data-target');
-      if (!targetId) return;
-
-      navLinks.forEach((l) => l.classList.remove('active'));
-      link.classList.add('active');
-
-      if (targetId === 'overview') {
-        if (mainCard) mainCard.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const targetEl = document.getElementById(targetId);
-      if (targetEl && mainCard) {
-        e.preventDefault();
-        const cardRect = mainCard.getBoundingClientRect();
-        const targetRect = targetEl.getBoundingClientRect();
-        const relativeTop = targetRect.top - cardRect.top + mainCard.scrollTop;
-        mainCard.scrollTo({ top: relativeTop - 10, behavior: 'smooth' });
-      }
-    });
-  });
-</script>
 
 <style>
   .left-nav-card {
@@ -62,26 +46,29 @@ const navItems = [
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 20px 16px;
+    padding: 24px 18px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
 
-  .nav-header {
-    font-size: 0.88rem;
+  /* 彻底移除 border-bottom 分割线，纯靠自然留白 */
+  .nav-section-title {
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--text-light);
-    letter-spacing: 0.05em;
-    padding: 0 8px 14px 8px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
-  .nav-header i {
+  .nav-section-title i {
     color: var(--primary);
   }
 
@@ -93,32 +80,24 @@ const navItems = [
   }
 
   .nav-btn {
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
     padding: 10px 14px;
+    border: none;
+    background: transparent;
     border-radius: 10px;
     color: var(--text-muted);
-    text-decoration: none;
     font-size: 0.92rem;
     font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s ease;
-  }
-
-  .nav-btn i {
-    font-size: 0.95rem;
-    width: 18px;
-    text-align: center;
-    color: var(--text-light);
-    transition: color 0.2s ease;
+    text-align: left;
   }
 
   .nav-btn:hover {
     background: #f1f5f9;
-    color: var(--primary);
-  }
-
-  .nav-btn:hover i {
     color: var(--primary);
   }
 
@@ -128,28 +107,40 @@ const navItems = [
     font-weight: 600;
   }
 
-  .nav-btn.active i {
-    color: var(--primary);
+  .cat-count {
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: var(--text-light);
   }
 
-  @media (max-width: 767px) {
-    .left-nav-card {
-      padding: 10px 12px;
-      border-radius: 12px;
-    }
-    .nav-header {
-      display: none;
-    }
-    .nav-list {
-      flex-direction: row;
-      overflow-x: auto;
-      white-space: nowrap;
-      gap: 8px;
-      padding-bottom: 2px;
-    }
-    .nav-btn {
-      padding: 6px 12px;
-      font-size: 0.85rem;
-    }
+  .nav-btn.active .cat-count {
+    background: #ffffff;
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-tag {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-tag:hover {
+    color: var(--primary);
+    background: var(--tag-bg);
+    border-color: #bfdbfe;
   }
 </style>

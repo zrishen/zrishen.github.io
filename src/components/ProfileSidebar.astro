@@ -1,17 +1,18 @@
 ---
 import { Image } from 'astro:assets';
-import type { ProfileInfo } from '../data/types';
+import type { SiteProfile } from '../data/types';
 import profilePhoto from '../assets/photo.jpg';
 
 interface Props {
-  profile: ProfileInfo;
+  data: SiteProfile;
 }
 
-const { profile } = Astro.props;
+const { data } = Astro.props;
+const { profile, education, awards } = data;
 ---
 
 <aside class="profile-sidebar-card">
-  <!-- 头像与基本名片 -->
+  <!-- 头像与核心定位 -->
   <div class="avatar-wrapper">
     <Image
       src={profilePhoto}
@@ -28,19 +29,18 @@ const { profile } = Astro.props;
   <div class="profile-header-info">
     <h1 class="profile-name">
       {profile.name}
-      <span class="profile-en">| {profile.englishName}</span>
     </h1>
     <div class="profile-badge">
       <i class={profile.titleIcon}></i> {profile.title}
     </div>
   </div>
 
-  <!-- 个人简述 -->
+  <!-- 个人研究简介（纯净留白，无横截线） -->
   <p class="profile-bio">
     {profile.bio}
   </p>
 
-  <!-- 联系方式与外链 -->
+  <!-- 联系方式 -->
   <div class="contact-group">
     {profile.contacts.map((contact) => (
       contact.href ? (
@@ -53,14 +53,41 @@ const { profile } = Astro.props;
           <i class={contact.icon}></i>
           <span>{contact.text}</span>
         </a>
-      ) : (
-        <div class="contact-link-item plain-item">
-          <i class={contact.icon}></i>
-          <span>{contact.text}</span>
-        </div>
-      )
+      ) : null
     ))}
   </div>
+
+  <!-- 教育背景区块（现代化浅底微卡片，无分割线） -->
+  <div class="sidebar-section">
+    <div class="sidebar-sec-title">
+      <i class="fa-solid fa-graduation-cap"></i> 教育背景
+    </div>
+    <div class="edu-list">
+      {education.map((edu) => (
+        <div class="edu-pill-item">
+          <div class="edu-title">{edu.school} · {edu.major}</div>
+          <div class="edu-sub-date">{edu.period}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- 荣誉与奖项（若有数据则展示，无横线） -->
+  {awards && awards.length > 0 && (
+    <div class="sidebar-section">
+      <div class="sidebar-sec-title">
+        <i class="fa-solid fa-trophy"></i> 荣誉奖项
+      </div>
+      <div class="awards-clean-list">
+        {awards.map((award) => (
+          <div class="award-clean-item">
+            <div class="award-name-text">{award.name}</div>
+            <div class="award-sub-date">{award.date}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
 </aside>
 
 <style>
@@ -70,7 +97,7 @@ const { profile } = Astro.props;
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 24px 20px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -87,59 +114,50 @@ const { profile } = Astro.props;
   .avatar-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .profile-avatar {
-    width: 125px;
-    height: 165px;
+    width: 120px;
+    height: 160px;
     object-fit: cover;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
     border: 3px solid #ffffff;
   }
 
   .profile-header-info {
     text-align: center;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   .profile-name {
     font-size: 1.35rem;
     font-weight: 700;
     color: #111827;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 6px;
-  }
-
-  .profile-en {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-light);
   }
 
   .profile-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--primary);
     background: var(--tag-bg);
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
   }
 
   .profile-bio {
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     color: var(--text-muted);
-    line-height: 1.55;
+    line-height: 1.6;
     margin-bottom: 16px;
-    padding-bottom: 14px;
-    border-bottom: 1px dashed var(--border);
     text-align: justify;
   }
 
@@ -147,26 +165,27 @@ const { profile } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 22px;
   }
 
   .contact-link-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 7px 10px;
+    padding: 8px 12px;
     background: #f8fafc;
     border: 1px solid #f1f5f9;
     border-radius: 8px;
     color: var(--text-main);
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 500;
     transition: all 0.2s ease;
   }
 
   .contact-link-item i {
     color: var(--primary);
-    width: 16px;
+    width: 14px;
     text-align: center;
   }
 
@@ -176,32 +195,83 @@ const { profile } = Astro.props;
     border-color: #bfdbfe;
   }
 
-  .plain-item:hover {
-    background: #f8fafc;
-    color: var(--text-main);
-    border-color: #f1f5f9;
+  /* 侧边小节：无生硬分割横线，靠外边距留白自然区分 */
+  .sidebar-section {
+    margin-top: 18px;
   }
 
-  @media (max-width: 1119px) and (min-width: 768px) {
-    .profile-sidebar-card {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      text-align: left;
-    }
-    .profile-header-info {
-      text-align: left;
-    }
-    .profile-name {
-      justify-content: flex-start;
-    }
-    .avatar-wrapper {
-      margin-bottom: 0;
-    }
-    .profile-bio {
-      padding-bottom: 0;
-      border-bottom: none;
-      margin-bottom: 10px;
-    }
+  .sidebar-sec-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-sec-title i {
+    color: var(--primary);
+    font-size: 0.88rem;
+  }
+
+  /* 教育背景：轻量浅灰胶囊卡片 */
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .edu-pill-item {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: background 0.2s;
+  }
+
+  .edu-pill-item:hover {
+    background: #f1f5f9;
+  }
+
+  .edu-title {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .edu-sub-date {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.02em;
+  }
+
+  /* 荣誉奖项：自然留白间距，无虚线割裂感 */
+  .awards-clean-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .award-clean-item {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  .award-name-text {
+    font-size: 0.84rem;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .award-sub-date {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.02em;
   }
 </style>
