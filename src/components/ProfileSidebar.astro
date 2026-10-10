@@ -65,11 +65,23 @@ const { profile } = Astro.props;
 
 <style>
   .profile-sidebar-card {
+    height: 100%;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 22px 18px;
+    padding: 24px 20px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .profile-sidebar-card::-webkit-scrollbar {
+    width: 4px;
+  }
+  .profile-sidebar-card::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
   }
 
   .avatar-wrapper {
