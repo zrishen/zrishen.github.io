@@ -1,0 +1,88 @@
+backend:
+  name: github
+  repo: zrishen/zrishen.github.io
+  branch: main
+
+# 界面语言
+locale: "zh"
+
+# 禁用本地未保存提醒防丢失
+publish_mode: simple
+
+collections:
+  - name: "resume"
+    label: "个人履历设置"
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: "profile_data"
+        label: "主页全部内容"
+        file: "src/data/profile.json"
+        format: "json"
+        fields:
+          # --- 个人资料 ---
+          - label: "个人资料"
+            name: "profile"
+            widget: "object"
+            fields:
+              - { label: "中文姓名", name: "name", widget: "string" }
+              - { label: "英文名/别名", name: "englishName", widget: "string" }
+              - { label: "职位头衔", name: "title", widget: "string" }
+              - { label: "头衔图标", name: "titleIcon", widget: "string", default: "fa-solid fa-briefcase" }
+              - { label: "个人简介", name: "bio", widget: "text" }
+              - label: "联系方式列表"
+                name: "contacts"
+                widget: "list"
+                fields:
+                  - { label: "标签说明", name: "label", widget: "string" }
+                  - { label: "展示文字", name: "text", widget: "string" }
+                  - { label: "跳转链接 (可空)", name: "href", widget: "string", required: false }
+                  - { label: "FontAwesome图标", name: "icon", widget: "string" }
+                  - { label: "在新标签页打开", name: "isExternal", widget: "boolean", default: false, required: false }
+
+          # --- 教育背景 ---
+          - label: "教育背景"
+            name: "education"
+            widget: "list"
+            fields:
+              - { label: "学校与学位", name: "school", widget: "string" }
+              - { label: "学位级别", name: "degree", widget: "string" }
+              - { label: "时间段", name: "period", widget: "string" }
+              - { label: "专业方向", name: "major", widget: "string" }
+              - { label: "成绩与排名", name: "honorOrGpa", widget: "string" }
+
+          # --- 科研与实践项目 ---
+          - label: "科研与实践项目"
+            name: "projects"
+            widget: "list"
+            fields:
+              - { label: "项目名称", name: "title", widget: "string" }
+              - { label: "级别/荣誉标签 (可空)", name: "tag", widget: "string", required: false }
+              - { label: "周期时间", name: "period", widget: "string" }
+              - { label: "项目详细描述", name: "description", widget: "text" }
+
+          # --- 专业技能 ---
+          - label: "专业技能分类"
+            name: "skills"
+            widget: "list"
+            fields:
+              - { label: "分类名称", name: "title", widget: "string" }
+              - { label: "图标", name: "icon", widget: "string" }
+              - { label: "技能关键词", name: "skills", widget: "list" }
+
+          # --- 荣誉与竞赛奖项 ---
+          - label: "荣誉与竞赛奖项"
+            name: "awards"
+            widget: "list"
+            fields:
+              - { label: "奖项名称", name: "name", widget: "string" }
+              - { label: "获奖时间", name: "date", widget: "string" }
+
+          # --- 页脚设置 ---
+          - label: "页脚版权"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "年份", name: "year", widget: "number", value_type: "int" }
+              - { label: "版权文字", name: "copyright", widget: "string" }
