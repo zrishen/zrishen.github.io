@@ -3,10 +3,14 @@ backend:
   repo: zrishen/zrishen.github.io
   branch: main
 
+# 必填配置：媒体文件存储路径
+media_folder: "public/images"
+public_folder: "/images"
+
 # 界面语言
 locale: "zh"
 
-# 禁用本地未保存提醒防丢失
+# 发布模式
 publish_mode: simple
 
 collections:
@@ -69,7 +73,10 @@ collections:
             fields:
               - { label: "分类名称", name: "title", widget: "string" }
               - { label: "图标", name: "icon", widget: "string" }
-              - { label: "技能关键词", name: "skills", widget: "list" }
+              - label: "技能关键词"
+                name: "skills"
+                widget: "list"
+                field: { label: "技能名称", name: "skill", widget: "string" }
 
           # --- 荣誉与竞赛奖项 ---
           - label: "荣誉与竞赛奖项"
