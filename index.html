@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>钟日深 (Rishen Zhong) - 个人主页</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --text-light: #6b7280;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --tag-bg: #eff6ff;
+      --tag-text: #1d4ed8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* Profile Header */
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      margin-bottom: 32px;
+    }
+
+    .profile-avatar {
+      width: 140px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .profile-name span {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .profile-title {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f1f5f9;
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .contact-btn:hover {
+      background: var(--tag-bg);
+      color: var(--primary);
+    }
+
+    /* Section */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title i {
+      color: var(--primary);
+      font-size: 1.15rem;
+    }
+
+    /* Items */
+    .item {
+      margin-bottom: 24px;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .item-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .item-date {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .item-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .item-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .item-desc ul {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+    .item-desc li {
+      margin-bottom: 4px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .skill-card-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-card-text {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 640px) {
+      .profile-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+      }
+      .profile-name {
+        justify-content: center;
+      }
+      .profile-title {
+        justify-content: center;
+      }
+      .contact-links {
+        justify-content: center;
+      }
+      .item-header {
+        flex-direction: column;
+        gap: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header Card -->
+    <header class="profile-card">
+      <img src="photo.jpg" alt="钟日深" class="profile-avatar">
+      <div class="profile-info">
+        <h1 class="profile-name">钟日深 <span>Rishen Zhong</span></h1>
+        <div class="profile-title">
+          <i class="fa-solid fa-briefcase"></i> 算法工程师
+          <span class="tag">中共党员</span>
+        </div>
+        <p class="profile-bio">
+          华南师范大学硕士，专注计算机视觉（CV）、多模态表征对齐与大语言模型应用。具备扎实的科研攻关与工程落地能力。
+        </p>
+        <div class="contact-links">
+          <a href="mailto:rishenz@163.com" class="contact-btn">
+            <i class="fa-regular fa-envelope"></i> rishenz@163.com
+          </a>
+          <a href="https://github.com/zrishen" target="_blank" class="contact-btn">
+            <i class="fa-brands fa-github"></i> GitHub
+          </a>
+          <span class="contact-btn">
+            <i class="fa-solid fa-phone"></i> 15605939608
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 科研与论文 -->
+    <section class="section">
+      <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> 科研成果</h2>
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">
+            Modality Decoupling and Coupling Network for Visible-Infrared Person Re-Identification
+            <span class="tag">CCF-A</span>
+            <span class="tag">中科院一区</span>
+          </div>
+          <div class="item-date">2026.11</div>
+        </div>
+        <div class="item-subtitle">
+          <strong><u>Rishen Zhong</u></strong>, Guorong Lin, and Zhenhua Huang · IEEE TIFS
+        </div>
+        <div class="item-desc">
+          提出可见光与红外图像间的跨模态行人重识别方法，基于 CLIP 提示学习解耦身份与模态语义，语义耦合对齐多模态特征，知识蒸馏增强跨模态判别。
+        </div>
+      </div>
+
+      <div class="item" style="margin-top: 20px;">
+        <div class="item-header">
+          <div class="item-title">
+            基于图像监控与边缘计算的水稻病虫害自动识别
+            <span class="tag">国家级大创·优秀结题</span>
+          </div>
+          <div class="item-date">2021.06 - 2022.12</div>
+        </div>
+        <div class="item-desc">
+          面向水稻病虫害的图像识别与远程监测系统，以解耦知识蒸馏提升轻量模型精度 8.48%，并完成 Django 后端与边缘部署。获软件著作权 2 项。
+        </div>
+      </div>
+    </section>
+
+    <!-- 工作与工程经历 -->
+    <section class="section">
+      <h2 class="section-title"><i class="fa-solid fa-laptop-code"></i> 工程与工作经历</h2>
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">广州多益网络股份有限公司</div>
+          <div class="item-date">2026.05 - 至今</div>
+        </div>
+        <div class="item-subtitle">算法工程师</div>
+
+        <div style="margin-top: 12px;">
+          <h4 style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">1. LLM 代码审查 CLI 工具（主要开发）</h4>
+          <div class="item-desc">
+            <ul>
+              <li><strong>审查链路：</strong>构建“检索→主审→复审→报告”四阶段链路，结合 JSON Schema 与 snippet 核验，基于 Claude Agent SDK 实现 MCP 检索与并发背压。</li>
+              <li><strong>符号索引：</strong>基于 Tree-sitter 构建跨 18 种语言的符号属性图，冷构建提速 10.2× (52.6s → 5.18s)。</li>
+              <li><strong>全量/增量接入：</strong>接入 CI 增量审查；全仓库通过 Semgrep 与 LLM 协同解决 OOM，4055 个文件覆盖率达 99.3%。</li>
+              <li><strong>评测闭环：</strong>搭建端到端评测基准，语义 F1 提升 24% (0.192 → 0.238)。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <h4 style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">2. 游戏素材审查 Agent（负责人）</h4>
+          <div class="item-desc">
+            <ul>
+              <li><strong>多模态 Agent：</strong>基于 LangGraph 构建对话式主从审查 Agent，多模态模型看图识别品类/形态并按多档标准输出结果。</li>
+              <li><strong>评分与知识库：</strong>构建涵盖 83 套评分表的标准库；搭建 PostgreSQL + Qdrant 知识库实现历史审结案例相似检索。</li>
+              <li><strong>插件化架构：</strong>自研 weavkit 插件化框架，支持声明式装配与热插拔更新。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 教育背景 -->
+    <section class="section">
+      <h2 class="section-title"><i class="fa-solid fa-school"></i> 教育背景</h2>
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">华南师范大学 · 硕士</div>
+          <div class="item-date">2023.09 - 2026.06</div>
+        </div>
+        <div class="item-subtitle">人工智能 · 绩点 3.73 / 4.00</div>
+      </div>
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">福建农林大学 · 学士</div>
+          <div class="item-date">2019.09 - 2023.06</div>
+        </div>
+        <div class="item-subtitle">计算机科学与技术 · 专业排名 7 / 120</div>
+      </div>
+    </section>
+
+    <!-- 技能标签 -->
+    <section class="section">
+      <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> 专业技能</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><i class="fa-solid fa-eye" style="color:#2563eb;"></i> 计算机视觉</div>
+          <div class="skill-card-text">CNN, Faster R-CNN, ViT, PyTorch, OpenCV, Pillow</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><i class="fa-solid fa-diagram-project" style="color:#2563eb;"></i> 多模态学习</div>
+          <div class="skill-card-text">BERT, CLIP, BLIP, 跨模态特征对齐, 提示学习</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><i class="fa-solid fa-brain" style="color:#2563eb;"></i> 大语言模型</div>
+          <div class="skill-card-text">Qwen2.5, DeepSeek, Agent 链路构建 (LangGraph)</div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><i class="fa-solid fa-code" style="color:#2563eb;"></i> 开发与工程</div>
+          <div class="skill-card-text">C/C++, Python, Linux, Git, Docker, Django, Qdrant</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 钟日深 (Rishen Zhong). Hosted on GitHub Pages.</p>
+    </footer>
+  </div>
+
+</body>
+</html>
