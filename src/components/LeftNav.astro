@@ -47,7 +47,6 @@ const navItems = [
       const targetEl = document.getElementById(targetId);
       if (targetEl && mainCard) {
         e.preventDefault();
-        // 计算目标元素在中栏卡片内部的相对滚动偏移
         const cardRect = mainCard.getBoundingClientRect();
         const targetRect = targetEl.getBoundingClientRect();
         const relativeTop = targetRect.top - cardRect.top + mainCard.scrollTop;
@@ -73,9 +72,8 @@ const navItems = [
     font-size: 0.88rem;
     font-weight: 700;
     color: var(--text-light);
-    text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0 12px 14px 12px;
+    padding: 0 8px 14px 8px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
     display: flex;
