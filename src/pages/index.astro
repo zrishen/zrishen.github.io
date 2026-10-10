@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileHeader from '../components/ProfileHeader.astro';
+import EducationSection from '../components/EducationSection.astro';
+import ProjectsSection from '../components/ProjectsSection.astro';
+import SkillsSection from '../components/SkillsSection.astro';
+import AwardsSection from '../components/AwardsSection.astro';
+import Footer from '../components/Footer.astro';
+import { siteData } from '../data/profile';
+---
+
+<BaseLayout
+  title={`${siteData.profile.name} | ${siteData.profile.englishName}`}
+  description={siteData.profile.bio}
+>
+  <ProfileHeader profile={siteData.profile} />
+  <EducationSection education={siteData.education} />
+  <ProjectsSection projects={siteData.projects} />
+  <SkillsSection skills={siteData.skills} />
+  <AwardsSection awards={siteData.awards} />
+  <Footer copyright={siteData.footer.copyright} />
+</BaseLayout>

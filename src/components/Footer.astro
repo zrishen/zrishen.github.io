@@ -1,0 +1,20 @@
+---
+interface Props {
+  copyright: string;
+}
+
+const { copyright } = Astro.props;
+---
+
+<footer>
+  {copyright}
+</footer>
+
+<style>
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-light);
+    font-size: 0.85rem;
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import { Image } from 'astro:assets';
+import type { ProfileInfo } from '../data/types';
+import profilePhoto from '../assets/photo.jpg';
+
+interface Props {
+  profile: ProfileInfo;
+}
+
+const { profile } = Astro.props;
+---
+
+<header class="profile-card">
+  <Image
+    src={profilePhoto}
+    alt={profile.name}
+    width={260}
+    height={340}
+    format="webp"
+    quality={85}
+    class="profile-avatar"
+    loading="eager"
+  />
+  <div class="profile-info">
+    <h1 class="profile-name">
+      {profile.name} <span>| {profile.englishName}</span>
+    </h1>
+    <div class="profile-title">
+      <i class={profile.titleIcon}></i> {profile.title}
+    </div>
+    <p class="profile-bio">
+      {profile.bio}
+    </p>
+    <div class="contact-links">
+      {profile.contacts.map((contact) => (
+        contact.href ? (
+          <a
+            href={contact.href}
+            target={contact.isExternal ? "_blank" : undefined}
+            rel={contact.isExternal ? "noopener noreferrer" : undefined}
+            class="contact-btn"
+          >
+            <i class={contact.icon}></i> {contact.text}
+          </a>
+        ) : (
+          <span class="contact-btn">
+            <i class={contact.icon}></i> {contact.text}
+          </span>
+        )
+      ))}
+    </div>
+  </div>
+</header>
+
+<style>
+  .profile-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 32px;
+  }
+
+  .profile-avatar {
+    width: 130px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .profile-name span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-light);
+  }
+
+  .profile-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .profile-bio {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: #f1f5f9;
+    color: var(--text-main);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .contact-btn:hover {
+    background: var(--tag-bg);
+    color: var(--primary);
+  }
+
+  @media (max-width: 640px) {
+    .profile-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 24px;
+    }
+    .profile-name {
+      justify-content: center;
+    }
+    .profile-title {
+      justify-content: center;
+    }
+    .contact-links {
+      justify-content: center;
+    }
+  }
+</style>
