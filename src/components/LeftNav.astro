@@ -27,12 +27,32 @@ const navItems = [
 </nav>
 
 <script>
-  // 监听点击高亮与滚动联动
+  // 监听点击，平滑滚动中栏内部 (.main-card)
   const navLinks = document.querySelectorAll('.nav-btn');
+  const mainCard = document.querySelector('.main-card');
+
   navLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('data-target');
+      if (!targetId) return;
+
       navLinks.forEach((l) => l.classList.remove('active'));
       link.classList.add('active');
+
+      if (targetId === 'overview') {
+        if (mainCard) mainCard.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const targetEl = document.getElementById(targetId);
+      if (targetEl && mainCard) {
+        e.preventDefault();
+        // 计算目标元素在中栏卡片内部的相对滚动偏移
+        const cardRect = mainCard.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+        const relativeTop = targetRect.top - cardRect.top + mainCard.scrollTop;
+        mainCard.scrollTo({ top: relativeTop - 10, behavior: 'smooth' });
+      }
     });
   });
 </script>
@@ -41,7 +61,7 @@ const navItems = [
   .left-nav-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 14px;
     padding: 20px 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   }

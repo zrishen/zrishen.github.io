@@ -17,68 +17,106 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+/* 桌面端 App 级视口高度约束 */
+html, body {
+  height: 100%;
+  overflow: hidden;
   background-color: var(--bg-page);
   color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 主容器：铺满屏幕宽度，严格保持到边缘边距 15px */
+/* 主容器：铺满屏幕可视高度，严格保持四周边缘 15px */
 .container {
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   max-width: 100%;
   margin: 0;
   padding: 15px;
 }
 
-/* 三栏布局网格：卡片与卡片之间间距严格为 15px */
+/* 三栏布局网格：
+   - 左右两栏宽度完全一致 (260px : 1fr : 260px)，实现视觉严格对称
+   - 高度撑满 100%，卡片间距 15px
+*/
 .three-col-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 300px;
+  grid-template-columns: 260px minmax(0, 1fr) 260px;
   gap: 15px;
-  align-items: start;
+  height: 100%;
+  align-items: stretch;
 }
 
-/* 左侧栏：黏性定位，距离视口顶部 15px */
+/* 左侧栏：高度占满，内部如超出可滚动 */
 .col-left {
-  position: sticky;
-  top: 15px;
+  height: 100%;
+  overflow-y: auto;
 }
 
-/* 中间栏：主要内容流 */
+/* 中间栏：高度占满 */
 .col-middle {
   min-width: 0;
+  height: 100%;
+  min-height: 0; /* 关键：允许子元素 flex/grid 滚动 */
   display: flex;
   flex-direction: column;
 }
 
-/* 中间栏单个整体大卡片 */
+/* 中间栏独立卡片：
+   - 卡片外框与阴影固定贴合
+   - 只有卡片内部的内容区域响应滚轮滚动 (overflow-y: auto)
+*/
 .main-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 28px 32px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
-/* 右侧栏：个人卡片黏性定位，距离视口顶部 15px */
+/* 自定义中栏内部精致滚动条 */
+.main-card::-webkit-scrollbar {
+  width: 6px;
+}
+.main-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main-card::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.main-card::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* 右侧栏：高度占满，内部如有超出平滑滚动 */
 .col-right {
-  position: sticky;
-  top: 15px;
+  height: 100%;
+  overflow-y: auto;
 }
 
-/* 单卡片内部的章节小节（去除多余外框，作为卡片内区块） */
+/* 隐藏左右栏的默认滚动条（若内容稍有溢出时保证美观） */
+.col-left::-webkit-scrollbar,
+.col-right::-webkit-scrollbar {
+  width: 4px;
+}
+.col-left::-webkit-scrollbar-thumb,
+.col-right::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+/* 单卡片内部的章节小节 */
 .section-block {
   padding-bottom: 28px;
   margin-bottom: 28px;
   border-bottom: 1px solid var(--border);
-  scroll-margin-top: 25px;
+  scroll-margin-top: 15px;
 }
 
 .section-block:last-child {
@@ -118,31 +156,48 @@ body {
 
 /* 响应式断点：中屏平板端 (768px ~ 1119px) */
 @media (max-width: 1119px) {
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
+  .container {
+    height: auto;
+  }
   .three-col-layout {
-    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-columns: 220px minmax(0, 1fr);
+    height: auto;
     gap: 15px;
   }
   .col-right {
-    position: static;
+    height: auto;
     grid-column: 2;
-    order: -1; /* 个人信息显示在中栏上方 */
+    order: -1;
   }
   .main-card {
+    height: auto;
+    overflow-y: visible;
     padding: 24px 20px;
   }
 }
 
 /* 响应式断点：小屏手机端 (< 768px) */
 @media (max-width: 767px) {
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
   .container {
+    height: auto;
     padding: 15px 10px;
   }
   .three-col-layout {
     display: flex;
     flex-direction: column;
+    height: auto;
     gap: 15px;
   }
   .col-left {
+    height: auto;
     position: sticky;
     top: 0;
     z-index: 50;
@@ -150,13 +205,16 @@ body {
     padding: 4px 0;
   }
   .col-right {
-    position: static;
+    height: auto;
     order: 0;
   }
   .col-middle {
+    height: auto;
     order: 1;
   }
   .main-card {
+    height: auto;
+    overflow-y: visible;
     padding: 20px 16px;
   }
 }
