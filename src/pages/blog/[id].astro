@@ -30,21 +30,32 @@ const formatDate = (d: Date) =>
 
     <!-- 中栏：文章正文 -->
     <main class="col-middle">
-      <div class="main-card">
-        <a class="back-link" href="/#overview">← 返回首页</a>
+      <div class="main-card article-card">
+        <div class="reading-column">
+          <nav class="read-nav" aria-label="文章导航">
+            <a class="back-link" href="/#overview">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m12 5-7 7 7 7M5 12h14" />
+              </svg>
+              <span>返回首页</span>
+            </a>
+          </nav>
 
-        <header class="read-header">
-          <time class="read-date" datetime={post.data.date.toISOString()}>
-            {formatDate(post.data.date)}
-          </time>
-          <h1 class="read-title">{post.data.title}</h1>
-        </header>
+          <article>
+            <header class="read-header">
+              <time class="read-date" datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+              <h1 class="read-title">{post.data.title}</h1>
+            </header>
 
-        <div class="prose">
-          <Content />
+            <div class="prose">
+              <Content />
+            </div>
+          </article>
+
+          <Footer copyright={siteData.footer.copyright} />
         </div>
-
-        <Footer copyright={siteData.footer.copyright} />
       </div>
     </main>
 
@@ -56,21 +67,66 @@ const formatDate = (d: Date) =>
 </BaseLayout>
 
 <style>
+  .article-card {
+    padding: 32px clamp(24px, 3vw, 56px);
+    scrollbar-gutter: stable;
+  }
+
+  .reading-column {
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .read-nav {
+    display: flex;
+    margin-bottom: 36px;
+  }
+
   .back-link {
-    display: inline-block;
-    font-size: 0.85rem;
-    color: var(--text-light);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-page);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.18s ease;
+    transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .back-link svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .back-link:hover {
     color: var(--primary);
+    background: var(--tag-bg);
+    border-color: #bfdbfe;
+  }
+
+  .back-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
   }
 
   .read-header {
-    margin-top: 26px;
-    margin-bottom: 26px;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #eef2f7;
   }
 
   .read-date {
@@ -82,15 +138,15 @@ const formatDate = (d: Date) =>
 
   .read-title {
     font-family: var(--font-serif);
-    font-size: 1.65rem;
+    font-size: clamp(1.5rem, 1.6vw, 2rem);
     font-weight: 700;
     color: #0f172a;
     line-height: 1.45;
-    margin-top: 8px;
+    margin-top: 12px;
+    overflow-wrap: anywhere;
   }
 
   .prose {
-    max-width: 40em;
     font-size: 1.02rem;
     color: var(--text-main);
   }
@@ -103,5 +159,24 @@ const formatDate = (d: Date) =>
 
   .prose :global(p:last-child) {
     margin-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    .article-card {
+      padding: 24px 20px;
+    }
+
+    .read-nav {
+      margin-bottom: 28px;
+    }
+
+    .read-header {
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+    }
+
+    .prose {
+      font-size: 1rem;
+    }
   }
 </style>
