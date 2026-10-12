@@ -1,0 +1,107 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LeftNav from '../../components/LeftNav.astro';
+import ProfileSidebar from '../../components/ProfileSidebar.astro';
+import Footer from '../../components/Footer.astro';
+import { siteData } from '../../data/profile';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (d: Date) =>
+  `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+---
+
+<BaseLayout title={`${post.data.title} | 博客`} description={post.data.description}>
+  <div class="three-col-layout">
+    <!-- 左栏：文章归档 -->
+    <aside class="col-left">
+      <LeftNav />
+    </aside>
+
+    <!-- 中栏：文章正文 -->
+    <main class="col-middle">
+      <div class="main-card">
+        <a class="back-link" href="/#overview">← 返回首页</a>
+
+        <header class="read-header">
+          <time class="read-date" datetime={post.data.date.toISOString()}>
+            {formatDate(post.data.date)}
+          </time>
+          <h1 class="read-title">{post.data.title}</h1>
+        </header>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        <Footer copyright={siteData.footer.copyright} />
+      </div>
+    </main>
+
+    <!-- 右栏：个人档案名片 -->
+    <aside class="col-right">
+      <ProfileSidebar data={siteData} />
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+
+  .back-link:hover {
+    color: var(--primary);
+  }
+
+  .read-header {
+    margin-top: 26px;
+    margin-bottom: 26px;
+  }
+
+  .read-date {
+    font-size: 0.84rem;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  .read-title {
+    font-family: var(--font-serif);
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.45;
+    margin-top: 8px;
+  }
+
+  .prose {
+    max-width: 40em;
+    font-size: 1.02rem;
+    color: var(--text-main);
+  }
+
+  .prose :global(p) {
+    line-height: 1.95;
+    margin-bottom: 1.3em;
+    text-align: justify;
+  }
+
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

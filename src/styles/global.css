@@ -9,6 +9,7 @@
   --border: #e2e8f0;
   --tag-bg: #eff6ff;
   --tag-text: #1d4ed8;
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
 }
 
 * {
@@ -77,6 +78,8 @@ html, body {
   height: 100%;
   overflow-y: auto;
   scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 自定义中栏内部精致滚动条 */

@@ -1,43 +1,42 @@
 ---
-const categories = [
-  { id: "all", label: "全部文章", count: 3 },
-  { id: "multimodal", label: "多模态与CV", count: 2 },
-  { id: "llm", label: "大语言模型", count: 1 },
-  { id: "project-notes", label: "科研实践笔记", count: 1 }
-];
+import { getCollection } from 'astro:content';
 
-const tags = [
-  "PyTorch", "知识蒸馏", "边缘计算", "Vision Transformer", "CLIP", "DeepSeek"
-];
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
 ---
 
 <nav class="left-nav-card">
-  <!-- 文章分类目录（无分割横线） -->
   <div class="nav-section-title">
-    <i class="fa-solid fa-folder-open"></i>
-    <span>文章分类</span>
+    <span>归档</span>
   </div>
-  <ul class="nav-list">
-    {categories.map((cat, idx) => (
-      <li>
-        <button class={`nav-btn ${idx === 0 ? 'active' : ''}`} data-category={cat.id}>
-          <span class="cat-name">{cat.label}</span>
-          <span class="cat-count">{cat.count}</span>
-        </button>
-      </li>
-    ))}
-  </ul>
 
-  <!-- 热门标签筛选（无分割横线） -->
-  <div class="nav-section-title" style="margin-top: 28px;">
-    <i class="fa-solid fa-tags"></i>
-    <span>核心标签</span>
-  </div>
-  <div class="tag-cloud">
-    {tags.map((tag) => (
-      <span class="filter-tag">#{tag}</span>
-    ))}
-  </div>
+  {years.map((year) => (
+    <div class="year-group">
+      <div class="year-label">{year}</div>
+      <ul class="archive-list">
+        {byYear.get(year)!.map((post) => (
+          <li>
+            <a class="archive-link" href={`/blog/${post.id}/`}>
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+
+  <p class="archive-note">
+    共 {posts.length} 篇，写一篇归一篇。
+  </p>
 </nav>
 
 <style>
@@ -46,101 +45,61 @@ const tags = [
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 24px 18px;
+    padding: 24px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
   }
 
-  /* 彻底移除 border-bottom 分割线，纯靠自然留白 */
   .nav-section-title {
     font-size: 0.82rem;
     font-weight: 700;
     color: var(--text-light);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 0;
-    border-bottom: none;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
   }
 
-  .nav-section-title i {
-    color: var(--primary);
+  .year-group {
+    margin-bottom: 18px;
   }
 
-  .nav-list {
+  .year-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #334155;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+  }
+
+  .archive-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
   }
 
-  .nav-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border: none;
-    background: transparent;
-    border-radius: 10px;
+  .archive-link {
+    display: block;
+    padding: 7px 10px;
+    margin-left: -10px;
+    border-radius: 8px;
+    font-size: 0.88rem;
     color: var(--text-muted);
-    font-size: 0.92rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
+    text-decoration: none;
+    line-height: 1.5;
+    transition: all 0.18s ease;
   }
 
-  .nav-btn:hover {
+  .archive-link:hover {
     background: #f1f5f9;
     color: var(--primary);
   }
 
-  .nav-btn.active {
-    background: var(--tag-bg);
-    color: var(--primary);
-    font-weight: 600;
-  }
-
-  .cat-count {
+  .archive-note {
+    margin-top: auto;
+    padding-top: 18px;
     font-size: 0.78rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    background: #f1f5f9;
-    color: var(--text-light);
-  }
-
-  .nav-btn.active .cat-count {
-    background: #ffffff;
-    color: var(--primary);
-    font-weight: 700;
-  }
-
-  .tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .filter-tag {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    padding: 4px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .filter-tag:hover {
-    color: var(--primary);
-    background: var(--tag-bg);
-    border-color: #bfdbfe;
+    color: #94a3b8;
   }
 </style>

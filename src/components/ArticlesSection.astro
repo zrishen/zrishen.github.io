@@ -1,68 +1,34 @@
 ---
-const articles = [
-  {
-    title: "多模态大模型在边缘计算环境下的轻量化推理与蒸馏实践",
-    date: "2026.03.18",
-    category: "多模态与CV",
-    tags: ["多模态", "知识蒸馏", "边缘计算"],
-    readTime: "6 分钟",
-    summary: "在算力与显存严格受限的边缘嵌入式设备（如 Jetson / RK3588）上部署大模型时，体积与延迟是核心瓶颈。本文结合解耦知识蒸馏机制与轻量网络设计，探讨如何保持视觉-文本跨模态表征对齐效果的同时，实现模型推理吞吐的大幅提升。"
-  },
-  {
-    title: "从 CNN 到 Vision Transformer：复杂农业场景下的病斑细粒度分类演进",
-    date: "2025.11.20",
-    category: "科研实践笔记",
-    tags: ["计算机视觉", "ViT", "国家级大创"],
-    readTime: "8 分钟",
-    summary: "回顾国家级大创项目《水稻病虫害自动识别》中的核心算法迭代历程：从传统的 Faster R-CNN、SSD 目标检测，到结合注意力机制的 Vision Transformer 细粒度分类。分析复杂田间野外光照与细小病斑背景下的精度瓶颈与落地部署经验。"
-  },
-  {
-    title: "DeepSeek 与 Qwen2.5 架构剖析：前沿大语言模型技术学习心得",
-    date: "2025.08.12",
-    category: "大语言模型",
-    tags: ["LLM", "DeepSeek", "Qwen2.5"],
-    readTime: "10 分钟",
-    summary: "深入研读 DeepSeek 及通义千问 Qwen2.5 开源技术报告，从 MoE 混合专家架构、长上下文注意力优化以及高效后训练对齐（SFT / DPO / RLHF）等核心维度梳理现代大语言模型的工程演进逻辑。"
-  }
-];
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const formatDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
 
 <div class="article-stream">
-  <div class="stream-header">
-    <div class="header-main">
-      <h2 class="stream-title">文章与研究文稿</h2>
-      <span class="stream-subtitle">记录算法科研、多模态技术与工程落地思考</span>
-    </div>
-    <span class="stream-count">共 {articles.length} 篇</span>
-  </div>
+  <header class="stream-header">
+    <h2 class="stream-title">博客</h2>
+    <p class="stream-subtitle">记录思考、科研与生活</p>
+  </header>
 
-  <div class="article-cards">
-    {articles.map((item) => (
-      <article class="article-post-card">
-        <div class="article-post-meta">
-          <span class="article-category">{item.category}</span>
-          <span class="article-dot">·</span>
-          <span class="article-date">{item.date}</span>
-          <span class="article-dot">·</span>
-          <span class="article-read-time">{item.readTime}</span>
+  <div class="article-list">
+    {posts.map((post) => (
+      <a class="article-row" href={`/blog/${post.id}/`}>
+        <time class="article-date" datetime={post.data.date.toISOString()}>
+          {formatDate(post.data.date)}
+        </time>
+        <div class="article-row-main">
+          <h3 class="article-title">{post.data.title}</h3>
+          {post.data.description && (
+            <p class="article-desc">{post.data.description}</p>
+          )}
         </div>
-        <h3 class="article-post-title">
-          <a href="#">{item.title}</a>
-        </h3>
-        <p class="article-post-summary">
-          {item.summary}
-        </p>
-        <div class="article-post-footer">
-          <div class="post-tags">
-            {item.tags.map((t) => (
-              <span class="post-tag">#{t}</span>
-            ))}
-          </div>
-          <a href="#" class="read-more-link">
-            阅读全文 <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-      </article>
+        <span class="article-arrow" aria-hidden="true">→</span>
+      </a>
     ))}
   </div>
 </div>
@@ -71,135 +37,115 @@ const articles = [
   .article-stream {
     display: flex;
     flex-direction: column;
-    gap: 22px;
   }
 
   .stream-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
   }
 
   .stream-title {
-    font-size: 1.45rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
-    margin-bottom: 4px;
+    letter-spacing: 0.02em;
   }
 
   .stream-subtitle {
     font-size: 0.88rem;
     color: var(--text-light);
+    margin-top: 4px;
   }
 
-  .stream-count {
-    font-size: 0.82rem;
-    color: var(--text-light);
-    font-weight: 500;
+  .article-list {
+    margin-top: 10px;
   }
 
-  .article-cards {
+  .article-row {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    align-items: baseline;
+    gap: 18px;
+    padding: 22px 4px;
+    border-bottom: 1px solid #eef2f7;
+    text-decoration: none;
   }
 
-  .article-post-card {
-    padding: 24px;
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    border-radius: 12px;
-    transition: all 0.2s ease;
+  .article-row:last-child {
+    border-bottom: none;
   }
 
-  .article-post-card:hover {
-    background: #ffffff;
-    border-color: #e2e8f0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-    transform: translateY(-2px);
-  }
-
-  .article-post-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .article-date {
+    flex-shrink: 0;
+    width: 92px;
     font-size: 0.82rem;
-    color: var(--text-light);
-    margin-bottom: 10px;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
   }
 
-  .article-category {
+  .article-row-main {
+    min-width: 0;
+  }
+
+  .article-title {
+    font-family: var(--font-serif);
+    font-size: 1.14rem;
     font-weight: 600;
-    color: var(--primary);
-    background: var(--tag-bg);
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-
-  .article-dot {
-    color: #cbd5e1;
-  }
-
-  .article-post-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1.45;
-    margin-bottom: 12px;
-  }
-
-  .article-post-title a {
     color: #1e293b;
-    text-decoration: none;
-    transition: color 0.2s;
+    line-height: 1.5;
+    transition: color 0.18s ease;
   }
 
-  .article-post-title a:hover {
-    color: var(--primary);
-  }
-
-  .article-post-summary {
-    font-size: 0.92rem;
-    color: var(--text-muted);
-    line-height: 1.65;
-    margin-bottom: 16px;
-    text-align: justify;
-  }
-
-  .article-post-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .post-tag {
-    font-size: 0.78rem;
+  .article-desc {
+    font-size: 0.88rem;
     color: var(--text-light);
-    background: #ffffff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid #f1f5f9;
+    line-height: 1.7;
+    margin-top: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .read-more-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
+  .article-arrow {
+    flex-shrink: 0;
+    margin-left: auto;
     color: var(--primary);
-    text-decoration: none;
-    transition: gap 0.2s ease;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
-  .read-more-link:hover {
-    gap: 9px;
-    color: var(--primary-hover);
+  .article-row:hover .article-title,
+  .article-row:focus-visible .article-title {
+    color: var(--primary);
+  }
+
+  .article-row:hover .article-arrow,
+  .article-row:focus-visible .article-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .article-row:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 767px) {
+    .article-row {
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 2px;
+    }
+
+    .article-date {
+      width: auto;
+    }
+
+    .article-arrow {
+      display: none;
+    }
   }
 </style>
