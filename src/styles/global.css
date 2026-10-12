@@ -39,12 +39,12 @@ html, body {
 }
 
 /* 三栏布局网格：
-   - 左右两栏设定为 350px，对称且空间充裕
+   - 左右两栏随视口扩展，保持对称比例
    - 高度撑满 100%，卡片间距 15px
 */
 .three-col-layout {
   display: grid;
-  grid-template-columns: 350px minmax(0, 1fr) 350px;
+  grid-template-columns: clamp(280px, 24vw, 640px) minmax(0, 1fr) clamp(280px, 24vw, 640px);
   gap: 15px;
   height: 100%;
   align-items: stretch;
