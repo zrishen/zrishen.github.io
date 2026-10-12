@@ -30,9 +30,6 @@ const { profile, education, awards } = data;
     <h1 class="profile-name">
       {profile.name}
     </h1>
-    <div class="profile-badge">
-      <i class={profile.titleIcon}></i> {profile.title}
-    </div>
   </div>
 
   <!-- 个人研究简介（纯净留白，无横截线） -->
@@ -139,18 +136,6 @@ const { profile, education, awards } = data;
     display: flex;
     align-items: baseline;
     justify-content: center;
-  }
-
-  .profile-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--primary);
-    background: var(--tag-bg);
-    padding: 3px 12px;
-    border-radius: 20px;
   }
 
   .profile-bio {

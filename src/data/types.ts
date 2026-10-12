@@ -9,8 +9,6 @@ export interface ContactItem {
 export interface ProfileInfo {
   name: string;
   englishName: string;
-  title: string;
-  titleIcon: string;
   bio: string;
   contacts: ContactItem[];
 }

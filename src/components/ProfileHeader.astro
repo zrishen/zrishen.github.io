@@ -25,9 +25,6 @@ const { profile } = Astro.props;
     <h1 class="profile-name">
       {profile.name} <span>| {profile.englishName}</span>
     </h1>
-    <div class="profile-title">
-      <i class={profile.titleIcon}></i> {profile.title}
-    </div>
     <p class="profile-bio">
       {profile.bio}
     </p>
@@ -94,16 +91,6 @@ const { profile } = Astro.props;
     color: var(--text-light);
   }
 
-  .profile-title {
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: var(--primary);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
   .profile-bio {
     font-size: 0.95rem;
     color: var(--text-muted);
@@ -142,9 +129,6 @@ const { profile } = Astro.props;
       padding: 24px;
     }
     .profile-name {
-      justify-content: center;
-    }
-    .profile-title {
       justify-content: center;
     }
     .contact-links {
