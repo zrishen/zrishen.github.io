@@ -4,8 +4,9 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://zrishen.github.io',
   base: '/',
+  trailingSlash: 'always',
   build: {
-    format: 'file'
+    format: 'directory'
   },
   devToolbar: {
     enabled: false
