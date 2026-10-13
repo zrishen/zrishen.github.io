@@ -70,12 +70,12 @@ const { timeline } = Astro.props;
     padding-bottom: 0;
   }
 
-  /* 节点圆点，圆心与竖线对齐 */
+  /* 节点圆点，圆心与竖线对齐，垂直居中于首行的日期 */
   .tl-item::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 5px;
+    top: 6px;
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -86,16 +86,15 @@ const { timeline } = Astro.props;
     color: var(--primary);
   }
 
-  /* 最新一条：实心主色点 + 外扩光圈 */
+  /* 最新一条：实心主色点 + 外扩光圈（光晕对称，圆心位置不变） */
   .is-current::before {
-    top: 4px;
     background: var(--primary);
     box-shadow: 0 0 0 3px var(--bg-card), 0 0 0 5px rgba(37, 99, 235, 0.16);
   }
 
   .tl-date {
     display: block;
-    font-size: var(--fs-xs);
+    font-size: var(--fs-sm);
     font-weight: 600;
     color: #94a3b8;
     font-variant-numeric: tabular-nums;
@@ -105,7 +104,7 @@ const { timeline } = Astro.props;
 
   .tl-text {
     margin-top: 3px;
-    font-size: var(--fs-sm);
+    font-size: var(--fs-body);
     line-height: 1.7;
     color: var(--text-muted);
   }
