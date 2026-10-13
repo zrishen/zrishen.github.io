@@ -1,21 +1,39 @@
 ---
 interface Props {
-  copyright: string;
+  note: string;
 }
 
-const { copyright } = Astro.props;
+const { note } = Astro.props;
+const year = new Date().getFullYear();
 ---
 
 <footer>
-  {copyright}
+  <span class="year">© {year}</span>
+  <span class="sep" aria-hidden="true">·</span>
+  <span>{note}</span>
 </footer>
 
 <style>
+  /* 页脚：贴住卡片底部作为全站收尾，年份取构建时的当前年份 */
   footer {
-    text-align: center;
-    padding: 30px 0;
     margin-top: auto;
+    padding: 44px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
     color: var(--text-light);
-    font-size: 0.85rem;
+  }
+
+  .year {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sep {
+    color: #cbd5e1;
   }
 </style>

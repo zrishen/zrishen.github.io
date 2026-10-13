@@ -1,0 +1,117 @@
+---
+import type { TimelineItem } from '../data/types';
+
+interface Props {
+  timeline: TimelineItem[];
+}
+
+const { timeline } = Astro.props;
+---
+
+<section class="left-nav-card" aria-label="近况">
+  <div class="nav-section-title">
+    <span>现在</span>
+  </div>
+
+  <ol class="timeline">
+    {timeline.map((item, i) => (
+      <li class:list={['tl-item', { 'is-current': i === 0 }]}>
+        <time class="tl-date">{item.date}</time>
+        <p class="tl-text">{item.text}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .left-nav-card {
+    height: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  .timeline {
+    list-style: none;
+    position: relative;
+  }
+
+  /* 竖线：向下渐隐，暗示这条线还在往下长 */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 8px;
+    bottom: 2px;
+    width: 1px;
+    background: linear-gradient(180deg, #bfdbfe 0%, #e2e8f0 45%, transparent 100%);
+  }
+
+  .tl-item {
+    position: relative;
+    padding-left: 20px;
+    padding-bottom: 22px;
+  }
+
+  .tl-item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* 节点圆点，圆心与竖线对齐 */
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #cbd5e1;
+  }
+
+  .is-current .tl-date {
+    color: var(--primary);
+  }
+
+  /* 最新一条：实心主色点 + 外扩光圈 */
+  .is-current::before {
+    top: 4px;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px var(--bg-card), 0 0 0 5px rgba(37, 99, 235, 0.16);
+  }
+
+  .tl-date {
+    display: block;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+
+  .tl-text {
+    margin-top: 3px;
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .is-current .tl-text {
+    color: #1f2937;
+    font-weight: 500;
+  }
+</style>

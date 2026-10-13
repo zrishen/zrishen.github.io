@@ -10,6 +10,15 @@
   --tag-bg: #eff6ff;
   --tag-text: #1d4ed8;
   --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+
+  /* 字号梯度：6 档，步长 12→14→16→20→24→30（+2/+2/+4/+4/+6）
+     相邻档至少差 2px，保证视觉层级一眼可辨 */
+  --fs-xs: 0.75rem; /* 12px  页脚、时间戳等最次要信息 */
+  --fs-sm: 0.875rem; /* 14px  栏目标题、日期、摘要、侧栏正文 */
+  --fs-body: 1rem; /* 16px  文章正文 */
+  --fs-lg: 1.25rem; /* 20px  列表标题、正文 h3 */
+  --fs-xl: 1.5rem; /* 24px  区块标题、姓名、正文 h2 */
+  --fs-2xl: 1.875rem; /* 30px  页面主标题 */
 }
 
 * {
@@ -29,23 +38,23 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 主容器：铺满屏幕可视高度，严格保持四周边缘 15px */
+/* 主容器：铺满屏幕可视高度，严格保持四周边缘 10px */
 .container {
   width: 100vw;
   height: 100vh;
   max-width: 100%;
   margin: 0;
-  padding: 15px;
+  padding: 10px;
 }
 
 /* 三栏布局网格：
    - 左右两栏随视口扩展，保持对称比例
-   - 高度撑满 100%，卡片间距 15px
+   - 高度撑满 100%，卡片间距 10px
 */
 .three-col-layout {
   display: grid;
   grid-template-columns: clamp(280px, 24vw, 640px) minmax(0, 1fr) clamp(280px, 24vw, 640px);
-  gap: 15px;
+  gap: 10px;
   height: 100%;
   align-items: stretch;
 }
@@ -119,7 +128,7 @@ html, body {
   padding-bottom: 28px;
   margin-bottom: 28px;
   border-bottom: 1px solid var(--border);
-  scroll-margin-top: 15px;
+  scroll-margin-top: 10px;
 }
 
 .section-block:last-child {
@@ -129,7 +138,7 @@ html, body {
 }
 
 .section-title {
-  font-size: 1.2rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: #0f172a;
   display: flex;
@@ -142,7 +151,7 @@ html, body {
 
 .section-title i {
   color: var(--primary);
-  font-size: 1.1rem;
+  font-size: var(--fs-lg);
 }
 
 /* 胶囊标签 */
@@ -152,7 +161,7 @@ html, body {
   background: var(--tag-bg);
   color: var(--tag-text);
   border-radius: 6px;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
   margin-left: 8px;
 }
@@ -169,7 +178,7 @@ html, body {
   .three-col-layout {
     grid-template-columns: 220px minmax(0, 1fr);
     height: auto;
-    gap: 15px;
+    gap: 10px;
   }
   .col-right {
     height: auto;
@@ -191,13 +200,13 @@ html, body {
   }
   .container {
     height: auto;
-    padding: 15px 10px;
+    padding: 10px;
   }
   .three-col-layout {
     display: flex;
     flex-direction: column;
     height: auto;
-    gap: 15px;
+    gap: 10px;
   }
   .col-left {
     height: auto;

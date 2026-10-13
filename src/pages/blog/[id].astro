@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import LeftNav from '../../components/LeftNav.astro';
+import ArticleNav from '../../components/ArticleNav.astro';
 import ProfileSidebar from '../../components/ProfileSidebar.astro';
 import Footer from '../../components/Footer.astro';
 import { siteData } from '../../data/profile';
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const formatDate = (d: Date) =>
   `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
@@ -25,7 +25,7 @@ const formatDate = (d: Date) =>
   <div class="three-col-layout">
     <!-- 左栏：文章归档 -->
     <aside class="col-left">
-      <LeftNav />
+      <ArticleNav title={post.data.title} headings={headings} />
     </aside>
 
     <!-- 中栏：文章正文 -->
@@ -43,10 +43,10 @@ const formatDate = (d: Date) =>
 
           <article>
             <header class="read-header">
+              <h1 class="read-title">{post.data.title}</h1>
               <time class="read-date" datetime={post.data.date.toISOString()}>
                 {formatDate(post.data.date)}
               </time>
-              <h1 class="read-title">{post.data.title}</h1>
             </header>
 
             <div class="prose">
@@ -54,7 +54,7 @@ const formatDate = (d: Date) =>
             </div>
           </article>
 
-          <Footer copyright={siteData.footer.copyright} />
+          <Footer note={siteData.footer.note} />
         </div>
       </div>
     </main>
@@ -83,44 +83,44 @@ const formatDate = (d: Date) =>
 
   .read-nav {
     display: flex;
-    margin-bottom: 36px;
+    margin-bottom: 22px;
   }
 
   .back-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 40px;
-    padding: 8px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg-page);
-    font-size: 0.82rem;
+    gap: 5px;
+    padding: 4px 0;
+    font-size: var(--fs-xs);
     font-weight: 500;
     line-height: 1.4;
-    color: var(--text-muted);
+    color: var(--text-light);
     text-decoration: none;
-    transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+    transition: color 0.18s ease;
   }
 
   .back-link svg {
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     stroke: currentColor;
-    stroke-width: 1.7;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
+    transition: transform 0.18s ease;
   }
 
   .back-link:hover {
     color: var(--primary);
-    background: var(--tag-bg);
-    border-color: #bfdbfe;
+  }
+
+  .back-link:hover svg {
+    transform: translateX(-2px);
   }
 
   .back-link:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 3px;
+    border-radius: 3px;
   }
 
   .read-header {
@@ -129,25 +129,26 @@ const formatDate = (d: Date) =>
     border-bottom: 1px solid #eef2f7;
   }
 
+  .read-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.6vw, var(--fs-2xl));
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
   .read-date {
-    font-size: 0.84rem;
+    display: block;
+    margin-top: 10px;
+    font-size: var(--fs-sm);
     color: #94a3b8;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.03em;
   }
 
-  .read-title {
-    font-family: var(--font-serif);
-    font-size: clamp(1.5rem, 1.6vw, 2rem);
-    font-weight: 700;
-    color: #0f172a;
-    line-height: 1.45;
-    margin-top: 12px;
-    overflow-wrap: anywhere;
-  }
-
   .prose {
-    font-size: 1.02rem;
+    font-size: var(--fs-body);
     color: var(--text-main);
   }
 
@@ -161,13 +162,33 @@ const formatDate = (d: Date) =>
     margin-bottom: 0;
   }
 
+  /* 正文小标题：与左侧目录的锚点一一对应 */
+  .prose :global(h2) {
+    font-family: var(--font-serif);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+    margin: 2.4em 0 0.9em;
+    scroll-margin-top: 32px;
+  }
+
+  .prose :global(h3) {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.5;
+    margin: 1.9em 0 0.7em;
+    scroll-margin-top: 32px;
+  }
+
   @media (max-width: 767px) {
     .article-card {
       padding: 24px 20px;
     }
 
     .read-nav {
-      margin-bottom: 28px;
+      margin-bottom: 18px;
     }
 
     .read-header {
@@ -176,7 +197,7 @@ const formatDate = (d: Date) =>
     }
 
     .prose {
-      font-size: 1rem;
+      font-size: var(--fs-body);
     }
   }
 </style>

@@ -35,8 +35,17 @@
       "honorOrGpa": ""
     }
   ],
+  "timeline": [
+    {
+      "date": "2026.10",
+      "text": "主美 Agent"
+    },
+    {
+      "date": "2026.08",
+      "text": "代码审查 Agent"
+    }
+  ],
   "footer": {
-    "year": 2026,
-    "copyright": "© 2026 钟日深 (Rishen Zhong). Hosted on GitHub Pages."
+    "note": "Hosted on GitHub Pages"
   }
 }

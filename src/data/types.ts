@@ -39,14 +39,19 @@ export interface AwardItem {
   date: string;
 }
 
+export interface TimelineItem {
+  date: string;
+  text: string;
+}
+
 export interface SiteProfile {
   profile: ProfileInfo;
   education: EducationItem[];
   projects: ProjectItem[];
   skills: SkillCategory[];
   awards: AwardItem[];
+  timeline: TimelineItem[];
   footer: {
-    year: number;
-    copyright: string;
+    note: string;
   };
 }
