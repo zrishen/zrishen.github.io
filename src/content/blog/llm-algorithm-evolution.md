@@ -22,9 +22,9 @@ description: 从 n-gram 到 Decoder-Only，我把语言模型七十多年的路�
 
 常见的 bigram、trigram，就是把 n 取成 2 和 3。
 
-![完整的链式法则（左）与马尔可夫假设近似（右）的对比：后者只看前一个词](./images/ngram-vs-markov.png)
+![完整上下文（左）与二元模型近似（右）的对比：预测第四个词时，前者利用前三个词，后者只看第三个词](./images/ngram-vs-markov.png)
 
-<p class="caption">完整链式法则与马尔可夫假设的对比</p>
+<p class="caption">完整上下文与马尔可夫近似的对比，以只看前一个词的二元模型（n = 2）为例</p>
 
 这套数出来的办法统治了语言建模几十年，但有两个天生的毛病。
 
@@ -42,9 +42,9 @@ description: 从 n-gram 到 Decoder-Only，我把语言模型七十多年的路�
 - 词向量：把每个词映射成一个低维稠密向量，“猫”和“猫咪”的向量会靠得很近，见过的组合会带出没见过的组合，稀疏和泛化的问题一下子松开了。
 - 前馈神经网络（Feedforward Neural Network，FNN）：把固定窗口内几个词的向量拼起来喂给它，输出下一个词的概率分布。
 
-![FNN 结构：固定窗口的词向量拼成输入层，经隐藏层与 Softmax 输出下一个词的概率分布](./images/fnn-architecture.png)
+![FNN 语言模型：固定窗口内的三个词映射为词向量，拼接后经隐藏层与 Softmax，输出下一个词的概率分布](./images/fnn-architecture.png)
 
-<p class="caption">FNN 的结构：输入层 → 隐藏层 → Softmax 输出</p>
+<p class="caption">FNN 语言模型示意：固定窗口 → 词向量 → 拼接 → 隐藏层 → Softmax → 下一词概率分布</p>
 
 这是语言模型第一次有了“相似”的概念，词向量从此成了 NLP 的通用零件（后来的 [word2vec](https://arxiv.org/abs/1301.3781) 只是把它带火了）。
 

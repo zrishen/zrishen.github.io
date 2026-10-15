@@ -162,13 +162,12 @@ const formatDate = (d: Date) =>
     margin-bottom: 0;
   }
 
-  /* 正文插图：限宽限高居中，保持原比例；超高图自动缩小，避免占满整屏 */
+  /* 正文插图：按正文宽度缩放并居中，保留长图高度，保证结构图标签可读 */
   .prose :global(img) {
     display: block;
     width: auto;
     height: auto;
     max-width: 100%;
-    max-height: 480px;
     margin: 1.6em auto;
     border: 1px solid #eef2f7;
     border-radius: 8px;
