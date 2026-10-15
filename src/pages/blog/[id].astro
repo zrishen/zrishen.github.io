@@ -162,6 +162,59 @@ const formatDate = (d: Date) =>
     margin-bottom: 0;
   }
 
+  /* 正文插图：限宽限高居中，保持原比例；超高图自动缩小，避免占满整屏 */
+  .prose :global(img) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 480px;
+    margin: 1.6em auto;
+    border: 1px solid #eef2f7;
+    border-radius: 8px;
+  }
+
+  /* 图注：小字居中灰，紧跟在图下方 */
+  .prose :global(.caption) {
+    text-align: center;
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+    color: #94a3b8;
+    margin: -1em 0 1.6em;
+  }
+
+  /* 分点列表：跟随正文行距与缩进 */
+  .prose :global(ul) {
+    padding-left: 1.35em;
+    margin: 0 0 1.3em;
+  }
+
+  .prose :global(li) {
+    line-height: 1.95;
+    text-align: justify;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.35em;
+  }
+
+  .prose :global(li::marker) {
+    color: #94a3b8;
+  }
+
+  /* 正文链接：主色，平时无下划线，悬停加深并出现下划线 */
+  .prose :global(a) {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+
+  .prose :global(a:hover) {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   /* 正文小标题：与左侧目录的锚点一一对应 */
   .prose :global(h2) {
     font-family: var(--font-serif);
@@ -180,6 +233,41 @@ const formatDate = (d: Date) =>
     line-height: 1.5;
     margin: 1.9em 0 0.7em;
     scroll-margin-top: 32px;
+  }
+
+  /* 独立成行的公式与主线链路：始终单行不折行，窄屏时横向滚动；居中 */
+  .prose :global(.formula),
+  .prose :global(.roadmap) {
+    text-align: center;
+    white-space: nowrap;
+    overflow-x: auto;
+    font-size: 1.04em;
+    line-height: 2.3;
+    color: #0f172a;
+    margin: 1.4em 0 1.6em;
+  }
+
+  .prose :global(.roadmap) {
+    font-weight: 600;
+  }
+
+  /* 上下标：显式偏移定位，不依赖字体自带的上下标度量 */
+  .prose :global(sub) {
+    vertical-align: -0.25em;
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  .prose :global(sup) {
+    vertical-align: 0.5em;
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  /* 关键句强调：正文里的点睛句 */
+  .prose :global(.highlight) {
+    color: #c0392b;
+    font-weight: 600;
   }
 
   @media (max-width: 767px) {
