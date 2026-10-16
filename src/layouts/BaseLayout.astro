@@ -24,6 +24,56 @@ const {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- 桌面端正文与侧栏各自在内部容器里滚动，浏览器刷新只恢复整页滚动位置，内层归零。
+       这里手动记录/还原各容器位置，刷新后停在原处（sessionStorage：仅当前标签页，关掉即清）。 -->
+  <script is:inline>
+    (() => {
+      const SELECTOR = '.col-left, .main-card, .col-right';
+      const KEY = 'scroll:' + location.pathname;
+
+      let saved = [];
+      try {
+        saved = JSON.parse(sessionStorage.getItem(KEY)) || [];
+      } catch {}
+
+      const containers = () => Array.from(document.querySelectorAll(SELECTOR));
+
+      // 刚还原时容器也会派发 scroll 事件，用时间戳区分，别把它当成用户滚动
+      let restoredAt = 0;
+      const restore = () => {
+        restoredAt = Date.now();
+        containers().forEach((el, i) => {
+          if (typeof saved[i] === 'number') el.scrollTop = saved[i];
+        });
+      };
+      if (saved.length) {
+        document.addEventListener('DOMContentLoaded', restore);
+        // 图片、字体加载完内容高度可能还有变化，再补一次
+        window.addEventListener('load', restore);
+      }
+
+      let timer = 0;
+      const save = () => {
+        try {
+          sessionStorage.setItem(
+            KEY,
+            JSON.stringify(containers().map((el) => el.scrollTop))
+          );
+        } catch {}
+      };
+      // 容器的 scroll 事件不冒泡，用捕获阶段监听
+      document.addEventListener(
+        'scroll',
+        () => {
+          if (Date.now() - restoredAt < 200) return;
+          clearTimeout(timer);
+          timer = setTimeout(save, 150);
+        },
+        true
+      );
+      window.addEventListener('pagehide', save);
+    })();
+  </script>
 </head>
 <body>
   <div class="container">

@@ -11,13 +11,14 @@ const formatDate = (d: Date) =>
 
 <div class="article-stream">
   <header class="stream-header">
-    <h2 class="stream-title">博客</h2>
+    <h2 class="stream-title">文章</h2>
     <p class="stream-subtitle">记录思考、科研与生活</p>
+    <button type="button" class="filter-note" hidden></button>
   </header>
 
   <div class="article-list">
     {posts.map((post) => (
-      <a class="article-row" href={`/blog/${post.id}/`}>
+      <a class="article-row" href={`/blog/${post.id}/`} data-date={post.data.date.toISOString().slice(0, 10)}>
         <time class="article-date" datetime={post.data.date.toISOString()}>
           {formatDate(post.data.date)}
         </time>
@@ -27,10 +28,11 @@ const formatDate = (d: Date) =>
             <p class="article-desc">{post.data.description}</p>
           )}
         </div>
-        <span class="article-arrow" aria-hidden="true">→</span>
       </a>
     ))}
   </div>
+
+  <p class="stream-empty" hidden>这段时间还没有文章。</p>
 </div>
 
 <style>
@@ -59,6 +61,39 @@ const formatDate = (d: Date) =>
 
   .article-list {
     margin-top: 10px;
+    transition: opacity 0.14s ease;
+  }
+
+  /* 切换筛选时先淡出、换完再淡入，避免列表硬切 */
+  .article-list.is-fading {
+    opacity: 0;
+  }
+
+  /* 有作者样式 display 时 [hidden] 会失效，这里显式关掉 */
+  .article-row[hidden] {
+    display: none;
+  }
+  /* 筛选状态条：本身就是按钮，点一下回到全部 */
+  .filter-note {
+    margin-top: 12px;
+    padding: 4px 12px;
+    font: inherit;
+    font-size: var(--fs-sm);
+    color: var(--primary);
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+
+  .filter-note:hover {
+    background: #dbeafe;
+  }
+  .stream-empty {
+    padding: 32px 4px;
+    font-size: var(--fs-sm);
+    color: var(--text-light);
   }
 
   .article-row {
@@ -68,6 +103,14 @@ const formatDate = (d: Date) =>
     padding: 22px 4px;
     border-bottom: 1px solid #eef2f7;
     text-decoration: none;
+    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  /* 悬停：极浅底 + 左侧一道主色细条，整行有反应，但不抢标题变色的主次 */
+  .article-row:hover,
+  .article-row:focus-visible {
+    background-color: #f8fafc;
+    box-shadow: inset 2px 0 0 var(--primary);
   }
 
   .article-row:last-child {
@@ -107,24 +150,9 @@ const formatDate = (d: Date) =>
     overflow: hidden;
   }
 
-  .article-arrow {
-    flex-shrink: 0;
-    margin-left: auto;
-    color: var(--primary);
-    opacity: 0;
-    transform: translateX(-6px);
-    transition: opacity 0.18s ease, transform 0.18s ease;
-  }
-
   .article-row:hover .article-title,
   .article-row:focus-visible .article-title {
     color: var(--primary);
-  }
-
-  .article-row:hover .article-arrow,
-  .article-row:focus-visible .article-arrow {
-    opacity: 1;
-    transform: translateX(0);
   }
 
   .article-row:focus-visible {
