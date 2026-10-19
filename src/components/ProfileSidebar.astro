@@ -1,0 +1,262 @@
+---
+import { Image } from 'astro:assets';
+import type { SiteProfile } from '../data/types';
+import profilePhoto from '../assets/photo.jpg';
+
+interface Props {
+  data: SiteProfile;
+}
+
+const { data } = Astro.props;
+const { profile, education, awards } = data;
+---
+
+<aside class="profile-sidebar-card">
+  <!-- 头像与核心定位 -->
+  <div class="avatar-wrapper">
+    <Image
+      src={profilePhoto}
+      alt={profile.name}
+      width={240}
+      height={240}
+      format="webp"
+      quality={85}
+      class="profile-avatar"
+      loading="eager"
+    />
+  </div>
+
+  <div class="profile-header-info">
+    <h1 class="profile-name">
+      {profile.name}
+    </h1>
+  </div>
+
+  <!-- 个人研究简介（纯净留白，无横截线） -->
+  <p class="profile-bio">
+    {profile.bio}
+  </p>
+
+  <!-- 联系方式 -->
+  <div class="contact-group">
+    {profile.contacts.map((contact) => (
+      contact.href ? (
+        <a
+          href={contact.href}
+          target={contact.isExternal ? "_blank" : undefined}
+          rel={contact.isExternal ? "noopener noreferrer" : undefined}
+          class="contact-link-item"
+        >
+          <i class={contact.icon}></i>
+          <span>{contact.text}</span>
+        </a>
+      ) : null
+    ))}
+  </div>
+
+  <!-- 教育背景区块（现代化浅底微卡片，无分割线） -->
+  <div class="sidebar-section">
+    <div class="sidebar-sec-title">
+      <i class="fa-solid fa-graduation-cap"></i> 教育背景
+    </div>
+    <div class="edu-list">
+      {education.map((edu) => (
+        <div class="edu-pill-item">
+          <div class="edu-title">{edu.school} · {edu.major}</div>
+          <div class="edu-sub-date">{edu.period}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- 荣誉与奖项（若有数据则展示，无横线） -->
+  {awards && awards.length > 0 && (
+    <div class="sidebar-section">
+      <div class="sidebar-sec-title">
+        <i class="fa-solid fa-trophy"></i> 荣誉奖项
+      </div>
+      <div class="awards-clean-list">
+        {awards.map((award) => (
+          <div class="award-clean-item">
+            <div class="award-name-text">{award.name}</div>
+            <div class="award-sub-date">{award.date}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</aside>
+
+<style>
+  .profile-sidebar-card {
+    height: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .profile-sidebar-card::-webkit-scrollbar {
+    width: 4px;
+  }
+  .profile-sidebar-card::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    border: 3px solid #ffffff;
+  }
+
+  .profile-header-info {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .profile-name {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+  }
+
+  .profile-bio {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    text-align: justify;
+  }
+
+  .contact-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .contact-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .contact-link-item i {
+    color: var(--primary);
+    width: 14px;
+    text-align: center;
+  }
+
+  .contact-link-item:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+    border-color: #e2e8f0;
+  }
+
+  /* 侧边小节：无生硬分割横线，靠外边距留白自然区分 */
+  .sidebar-section {
+    margin-top: 18px;
+  }
+
+  .sidebar-sec-title {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-sec-title i {
+    color: var(--primary);
+    font-size: var(--fs-sm);
+  }
+
+  /* 教育背景：轻量浅灰胶囊卡片 */
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .edu-pill-item {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: background 0.2s;
+  }
+
+  .edu-pill-item:hover {
+    background: #f1f5f9;
+  }
+
+  .edu-title {
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .edu-sub-date {
+    font-size: var(--fs-xs);
+    color: #94a3b8;
+    letter-spacing: 0.02em;
+  }
+
+  /* 荣誉奖项：自然留白间距，无虚线割裂感 */
+  .awards-clean-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .award-clean-item {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  .award-name-text {
+    font-size: var(--fs-sm);
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .award-sub-date {
+    font-size: var(--fs-xs);
+    color: #94a3b8;
+    letter-spacing: 0.02em;
+  }
+</style>

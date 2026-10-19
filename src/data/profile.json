@@ -1,0 +1,55 @@
+{
+  "profile": {
+    "name": "钟日深",
+    "englishName": "zrishen",
+    "bio": "华南师范大学硕士，研究方向涵盖计算机视觉（CV）、多模态表征对齐与大语言模型工程落地。",
+    "contacts": [
+      {
+        "label": "邮箱",
+        "href": "mailto:rishenz@163.com",
+        "icon": "fa-regular fa-envelope",
+        "text": "rishenz@163.com"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/zrishen",
+        "icon": "fa-brands fa-github",
+        "text": "GitHub",
+        "isExternal": true
+      }
+    ]
+  },
+  "education": [
+    {
+      "school": "华南师范大学",
+      "degree": "硕士",
+      "period": "2023.09 - 2026.06",
+      "major": "人工智能",
+      "honorOrGpa": ""
+    },
+    {
+      "school": "福建农林大学",
+      "degree": "学士",
+      "period": "2019.09 - 2023.06",
+      "major": "计算机科学与技术",
+      "honorOrGpa": ""
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026.08",
+      "text": "主美 Agent"
+    },
+    {
+      "date": "2026.05",
+      "text": "代码审查 Agent"
+    },
+    {
+      "date": "2023.09",
+      "text": "读研"
+    }
+  ],
+  "footer": {
+    "note": "Hosted on GitHub Pages"
+  }
+}

@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NowPanel from '../components/NowPanel.astro';
+import ProfileSidebar from '../components/ProfileSidebar.astro';
+import ArticlesSection from '../components/ArticlesSection.astro';
+import Footer from '../components/Footer.astro';
+import { siteData } from '../data/profile';
+---
+
+<BaseLayout
+  title={`${siteData.profile.name} | ${siteData.profile.englishName}`}
+  description={siteData.profile.bio}
+>
+  <div class="three-col-layout" id="overview">
+    <!-- 左栏：近况（正在做什么） -->
+    <aside class="col-left">
+      <NowPanel timeline={siteData.timeline} />
+    </aside>
+
+    <!-- 中栏：纯粹的文章大卡片流 (支持内部平滑独立滚动) -->
+    <main class="col-middle">
+      <div class="main-card">
+        <ArticlesSection />
+        <Footer note={siteData.footer.note} />
+      </div>
+    </main>
+
+    <!-- 右栏：完整学者/个人档案与经历名片 -->
+    <aside class="col-right">
+      <ProfileSidebar data={siteData} />
+    </aside>
+  </div>
+
+  <script>
+    // 左栏时间线的节点当时间段筛选器：点节点筛出这段时期的文章，再点一次还原
+    (() => {
+      // 只有带时间段的事件节点参与筛选；顶端的「现在」单独接「看全部」
+      const nodes = Array.from(document.querySelectorAll('.tl-btn')).filter((n) => n.dataset.from);
+      const nowBtn = document.querySelector('.tl-now-btn');
+      const rows = Array.from(document.querySelectorAll('.article-row[data-date]'));
+      const note = document.querySelector('.filter-note');
+      const empty = document.querySelector('.stream-empty');
+      if (!nodes.length || !rows.length || !note || !empty) return;
+      const list = document.querySelector('.article-list');
+      const items = Array.from(document.querySelectorAll('.tl-item'));
+
+      // 列表切换时先淡出再换内容，避免硬切
+      const swap = (fn) => {
+        if (!list) return fn();
+        list.classList.add('is-fading');
+        setTimeout(() => {
+          fn();
+          list.classList.remove('is-fading');
+        }, 140);
+      };
+
+      // 点亮「上一个（更新的）节点 → 本节点」之间那段线：本节点覆盖的就是这段时间
+      const lightSegment = (node) => {
+        items.forEach((li) => li.querySelector('.tl-seg')?.classList.remove('is-on'));
+        const idx = items.findIndex((li) => li.contains(node));
+        if (idx > 0) items[idx - 1].querySelector('.tl-seg')?.classList.add('is-on');
+      };
+      let active = null;
+
+      const clear = () => {
+        active = null;
+        nodes.forEach((n) => n.setAttribute('aria-pressed', 'false'));
+        items.forEach((li) => li.classList.remove('is-active'));
+        items[0]?.classList.add('is-active');
+        items.forEach((li) => li.querySelector('.tl-seg')?.classList.remove('is-on'));
+        swap(() => {
+          rows.forEach((r) => { r.hidden = false; });
+        });
+        note.hidden = true;
+        empty.hidden = true;
+      };
+
+      const apply = (node) => {
+        const from = node.dataset.from;
+        const to = node.dataset.to;
+        // 选中态挂在 li 上（圆点在 li::before 里），按钮只管 aria 状态
+        nodes.forEach((n) => n.setAttribute('aria-pressed', String(n === node)));
+        items.forEach((li) => li.classList.toggle('is-active', li.contains(node)));
+
+        lightSegment(node);
+
+        let count = 0;
+        const todo = [];
+        rows.forEach((row) => {
+          const d = row.dataset.date;
+          const hit = d >= from && (!to || d < to);
+          todo.push([row, !hit]);
+          if (hit) count += 1;
+        });
+        swap(() => {
+          todo.forEach(([row, out]) => { row.hidden = out; });
+        });
+
+        note.textContent = node.dataset.label + ' · ' + count + ' 篇 · 看全部';
+        note.hidden = false;
+        empty.hidden = count > 0;
+      };
+
+      nodes.forEach((node) => {
+        node.addEventListener('click', () => {
+          if (active === node) clear();
+          else {
+            active = node;
+            apply(node);
+          }
+        });
+      });
+      nowBtn?.addEventListener('click', clear);
+      note.addEventListener('click', clear);
+
+      // 打开页面时就是「显示全部」，所以顶端的「现在」默认亮着；
+      // 点了某个时间段，亮的位置跟着挪过去
+      items[0]?.classList.add('is-active');
+    })();
+  </script>
+</BaseLayout>

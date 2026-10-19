@@ -1,0 +1,66 @@
+---
+import type { EducationItem } from '../data/types';
+
+interface Props {
+  education: EducationItem[];
+}
+
+const { education } = Astro.props;
+---
+
+<div class="section-block" id="education">
+  <h2 class="section-title">
+    <i class="fa-solid fa-graduation-cap"></i> 教育背景
+  </h2>
+  {education.map((item) => (
+    <div class="item">
+      <div class="item-header">
+        <div class="item-title">{item.school}</div>
+        <div class="item-date">{item.period}</div>
+      </div>
+      <div class="item-subtitle">{item.major} · {item.honorOrGpa}</div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .item {
+    margin-bottom: 20px;
+  }
+
+  .item:last-child {
+    margin-bottom: 0;
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .item-title {
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .item-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 500;
+  }
+
+  .item-subtitle {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  @media (max-width: 640px) {
+    .item-header {
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+</style>

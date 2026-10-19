@@ -1,0 +1,13 @@
+# 构建与临时输出
+dist/
+.astro/
+node_modules/
+
+# 环境变量与系统文件
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# 浏览器调试工具的临时产物
+.playwright-mcp/

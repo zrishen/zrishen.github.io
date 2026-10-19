@@ -1,0 +1,180 @@
+---
+import type { TimelineItem } from '../data/types';
+
+interface Props {
+  timeline: TimelineItem[];
+}
+
+const { timeline } = Astro.props;
+
+// "2026.09" → "2026-09-01"，给前端做时间段筛选用
+const toISO = (d: string) => `${d.replace('.', '-')}-01`;
+---
+
+<section class="left-nav-card" aria-label="近况">
+  <ol class="timeline">
+    <li class="tl-item tl-anchor">
+      <span class="tl-seg" aria-hidden="true" />
+      <button type="button" class="tl-btn tl-now-btn" aria-label="看全部文章">
+        <span class="tl-date">现在</span>
+      </button>
+    </li>
+    {timeline.map((item, i) => (
+      <li class="tl-item">
+        {i < timeline.length - 1 && <span class="tl-seg" aria-hidden="true" />}
+        <button
+          type="button"
+          class="tl-btn"
+          aria-pressed="false"
+          data-from={toISO(item.date)}
+          data-to={i === 0 ? '' : toISO(timeline[i - 1].date)}
+          data-label={i === 0 ? `${item.date} 至今` : `${item.date} – ${timeline[i - 1].date}`}
+        >
+          <time class="tl-date">{item.date}</time>
+          <span class="tl-text">{item.text}</span>
+        </button>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .left-nav-card {
+    height: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* 顶端的「现在」：默认和普通节点一样素，点它（看全部）时才亮起来 */
+
+  .timeline {
+    list-style: none;
+    position: relative;
+  }
+
+  /* 竖线：向下渐隐，暗示这条线还在往下长 */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 2px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #bfdbfe 0%, #e2e8f0 45%, transparent 100%);
+  }
+
+  .tl-item {
+    position: relative;
+    padding-left: 26px;
+    padding-bottom: 26px;
+  }
+
+  /* 连接段：起点在本节点圆点，正好落在下一个（更早）节点的圆点上。
+     它代表「下一个节点到本节点」那段时间，选中更早的那个节点时点亮 */
+  .tl-seg {
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    width: 2px;
+    height: 100%;
+    border-radius: 2px;
+    background: transparent;
+    transition: background 0.25s ease;
+  }
+
+  .tl-seg.is-on {
+    background: var(--primary);
+  }
+
+  .tl-item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* 节点圆点，圆心与竖线对齐，垂直居中于首行的日期 */
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    /* 白色圆环：让竖线在节点处断开，像穿珠，而不是一根线挂着几个点 */
+    box-shadow: 0 0 0 3px var(--bg-card);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  /* 圆点压在连接段之上：蓝色线段从点的边缘起止，不穿过节点 */
+  .tl-item::before {
+    z-index: 2;
+  }
+
+  .tl-anchor:hover::before {
+    transform: scale(1.2);
+  }
+
+  /* 选中态：实心主色点 + 外扩光圈（光晕对称，圆心位置不变） */
+
+  .tl-date {
+    display: block;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+
+  .tl-text {
+    display: block;
+    margin-top: 3px;
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* 选中节点：圆点放大并点亮，和顶部固定的「现在」锚点区分开 */
+  .is-active::before {
+    background: var(--primary);
+    transform: scale(1.35);
+    box-shadow: 0 0 0 3px var(--bg-card), 0 0 0 5px rgba(37, 99, 235, 0.16);
+  }
+
+  /* 节点可点：点一下筛出这个时间段写的文章 */
+  .tl-btn {
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: 0;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .tl-btn:hover .tl-text,
+  .tl-btn:hover .tl-date {
+    color: var(--primary);
+  }
+
+  .tl-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  /* 选中态：整条转主色，圆点也点亮 */
+  .is-active .tl-date,
+  .is-active .tl-text {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+</style>

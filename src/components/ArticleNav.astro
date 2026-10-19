@@ -1,0 +1,102 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  headings: MarkdownHeading[];
+}
+
+const { title, headings } = Astro.props;
+
+// 只取正文里的二、三级标题，一级留给文章大标题
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<nav class="left-nav-card" aria-label="文章目录">
+  <div class="nav-section-title">
+    <span>目录</span>
+  </div>
+
+  <p class="toc-title">{title}</p>
+
+  {items.length > 0 ? (
+    <ul class="toc-list">
+      {items.map((h) => (
+        <li>
+          <a class:list={['toc-link', `toc-h${h.depth}`]} href={`#${h.slug}`}>
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="toc-empty">本文没有分节小标题</p>
+  )}
+</nav>
+
+<style>
+  .left-nav-card {
+    height: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  /* 当前文章标题：目录的根节点，不可点击 */
+  .toc-title {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 6px 10px;
+    margin-left: -10px;
+    border-radius: 8px;
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  /* 三级标题缩进一级，弱化一档 */
+  .toc-h3 {
+    padding-left: 22px;
+    font-size: var(--fs-sm);
+    color: var(--text-light);
+  }
+
+  .toc-link:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+  }
+
+  .toc-empty {
+    font-size: var(--fs-sm);
+    color: #94a3b8;
+  }
+</style>

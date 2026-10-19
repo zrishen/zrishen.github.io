@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<nav class="left-nav-card">
+  <div class="nav-section-title">
+    <span>归档</span>
+  </div>
+
+  {years.map((year) => (
+    <div class="year-group">
+      <div class="year-label">{year}</div>
+      <ul class="archive-list">
+        {byYear.get(year)!.map((post) => (
+          <li>
+            <a class="archive-link" href={`/blog/${post.id}/`}>
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+
+  <p class="archive-note">
+    共 {posts.length} 篇，写一篇归一篇。
+  </p>
+</nav>
+
+<style>
+  .left-nav-card {
+    height: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .year-group {
+    margin-bottom: 18px;
+  }
+
+  .year-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #334155;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+  }
+
+  .archive-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .archive-link {
+    display: block;
+    padding: 7px 10px;
+    margin-left: -10px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    line-height: 1.5;
+    transition: all 0.18s ease;
+  }
+
+  .archive-link:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+  }
+
+  .archive-note {
+    margin-top: auto;
+    padding-top: 18px;
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+</style>

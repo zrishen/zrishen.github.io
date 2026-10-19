@@ -1,0 +1,536 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleNav from '../../components/ArticleNav.astro';
+import ProfileSidebar from '../../components/ProfileSidebar.astro';
+import Footer from '../../components/Footer.astro';
+import { siteData } from '../../data/profile';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+const formatDate = (d: Date) =>
+  `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+---
+
+<BaseLayout title={`${post.data.title} | 博客`} description={post.data.description}>
+  <div class="three-col-layout">
+    <!-- 左栏：文章归档 -->
+    <aside class="col-left">
+      <ArticleNav title={post.data.title} headings={headings} />
+    </aside>
+
+    <!-- 中栏：文章正文 -->
+    <main class="col-middle">
+      <div class="main-card article-card">
+        <div class="reading-column">
+          <nav class="read-nav" aria-label="文章导航">
+            <a class="back-link" href="/#overview">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m12 5-7 7 7 7M5 12h14" />
+              </svg>
+              <span>返回首页</span>
+            </a>
+          </nav>
+
+          <article>
+            <header class="read-header">
+              <h1 class="read-title">{post.data.title}</h1>
+              <time class="read-date" datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+            </header>
+
+            <div class="prose">
+              <Content />
+            </div>
+          </article>
+
+          <script is:inline>
+            // 正文插图点击放大预览：滚轮缩放、按住拖动平移、双击复位；
+            // 点遮罩空白处、叉叉或按 Esc 关闭
+            (() => {
+              const MIN_SCALE = 1;
+              const MAX_SCALE = 8;
+
+              const overlay = document.createElement('div');
+              overlay.className = 'img-preview';
+              overlay.hidden = true;
+              overlay.tabIndex = -1;
+              overlay.setAttribute('role', 'dialog');
+              overlay.setAttribute('aria-modal', 'true');
+
+              const preview = document.createElement('img');
+              preview.draggable = false; // 关掉浏览器原生拖图，否则会抢走我们的平移
+              const closeButton = document.createElement('button');
+              closeButton.type = 'button';
+              closeButton.className = 'img-preview-close';
+              closeButton.setAttribute('aria-label', '关闭预览');
+              closeButton.textContent = '×';
+
+              overlay.append(preview, closeButton);
+              document.body.append(overlay);
+
+              let trigger = null;
+              let scale = 1;
+              let offsetX = 0;
+              let offsetY = 0;
+              let baseW = 0; // scale = 1 时图片适应视口后的显示尺寸
+              let baseH = 0;
+
+              // 缩放改真实宽高，不用 transform：浏览器会按新尺寸重新采样原图，放大后依然清晰；
+              // transform 只是把已栅格化的位图拉大，越放越糊
+              const applyView = () => {
+                if (!baseW || !baseH) return;
+                preview.style.maxWidth = 'none';
+                preview.style.maxHeight = 'none';
+                preview.style.width = `${baseW * scale}px`;
+                preview.style.height = `${baseH * scale}px`;
+                preview.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+              };
+
+              const resetView = () => {
+                scale = 1;
+                offsetX = 0;
+                offsetY = 0;
+                applyView();
+              };
+
+              // 图比视口大时才允许拖，且不让边缘离开视口
+              const clampOffset = () => {
+                const maxX = Math.max(0, (baseW * scale - overlay.clientWidth) / 2);
+                const maxY = Math.max(0, (baseH * scale - overlay.clientHeight) / 2);
+                offsetX = Math.min(maxX, Math.max(-maxX, offsetX));
+                offsetY = Math.min(maxY, Math.max(-maxY, offsetY));
+              };
+
+              const close = () => {
+                overlay.hidden = true;
+                preview.removeAttribute('src');
+                trigger?.focus();
+                trigger = null;
+              };
+
+              const open = (img) => {
+                trigger = img;
+                baseW = 0;
+                baseH = 0;
+                scale = 1;
+                offsetX = 0;
+                offsetY = 0;
+                preview.style.cssText = '';
+                preview.src = img.currentSrc || img.src;
+                preview.alt = img.alt || '';
+                overlay.hidden = false;
+                closeButton.focus();
+              };
+
+              // 图片加载完才知道适应视口后的基准尺寸，量到之后再按当前倍率摆一次
+              preview.addEventListener('load', () => {
+                baseW = preview.offsetWidth;
+                baseH = preview.offsetHeight;
+                applyView();
+              });
+
+              document.querySelectorAll('.prose img').forEach((img) => {
+                img.tabIndex = 0;
+                img.setAttribute('role', 'button');
+                img.addEventListener('click', () => open(img));
+                img.addEventListener('keydown', (event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    open(img);
+                  }
+                });
+              });
+
+              // 滚轮缩放：以光标所在点为中心，缩放比用指数保证手感均匀
+              overlay.addEventListener(
+                'wheel',
+                (event) => {
+                  event.preventDefault();
+                  const next = Math.min(
+                    MAX_SCALE,
+                    Math.max(MIN_SCALE, scale * Math.exp(-event.deltaY * 0.0015))
+                  );
+                  const ratio = next / scale;
+                  const rect = overlay.getBoundingClientRect();
+                  const cx = event.clientX - rect.left - rect.width / 2;
+                  const cy = event.clientY - rect.top - rect.height / 2;
+                  offsetX = cx - (cx - offsetX) * ratio;
+                  offsetY = cy - (cy - offsetY) * ratio;
+                  scale = next;
+                  clampOffset();
+                  applyView();
+                },
+                { passive: false }
+              );
+
+              // 拖动平移：指针监听挂在 window 上，拖出遮罩也不会断
+              let dragging = false;
+              let moved = false;
+              let startX = 0;
+              let startY = 0;
+              let startOffsetX = 0;
+              let startOffsetY = 0;
+
+              overlay.addEventListener('pointerdown', (event) => {
+                if (event.target === closeButton) return;
+                event.preventDefault(); // 同样是为了阻止原生拖图
+                dragging = true;
+                moved = false;
+                startX = event.clientX;
+                startY = event.clientY;
+                startOffsetX = offsetX;
+                startOffsetY = offsetY;
+                preview.style.cursor = 'grabbing';
+              });
+
+              window.addEventListener('pointermove', (event) => {
+                if (!dragging) return;
+                const dx = event.clientX - startX;
+                const dy = event.clientY - startY;
+                if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+                offsetX = startOffsetX + dx;
+                offsetY = startOffsetY + dy;
+                clampOffset();
+                applyView();
+              });
+
+              const endDrag = () => {
+                if (!dragging) return;
+                dragging = false;
+                preview.style.cursor = '';
+              };
+              window.addEventListener('pointerup', endDrag);
+              window.addEventListener('pointercancel', endDrag);
+
+              preview.addEventListener('dblclick', resetView);
+              preview.addEventListener('dragstart', (event) => event.preventDefault());
+
+              closeButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                close();
+              });
+              overlay.addEventListener('click', (event) => {
+                if (moved || event.target === preview) return;
+                close();
+              });
+              document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !overlay.hidden) close();
+              });
+            })();
+          </script>
+
+          <Footer note={siteData.footer.note} />
+        </div>
+      </div>
+    </main>
+
+    <!-- 右栏：个人档案名片 -->
+    <aside class="col-right">
+      <ProfileSidebar data={siteData} />
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .article-card {
+    padding: 32px clamp(24px, 2vw, 40px);
+    scrollbar-gutter: stable;
+  }
+
+  .reading-column {
+    width: 100%;
+    max-width: 1100px;
+    margin-inline: auto;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .read-nav {
+    display: flex;
+    margin-bottom: 22px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 0;
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+
+  .back-link svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.18s ease;
+  }
+
+  .back-link:hover {
+    color: var(--primary);
+  }
+
+  .back-link:hover svg {
+    transform: translateX(-2px);
+  }
+
+  .back-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  .read-header {
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #eef2f7;
+  }
+
+  .read-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 1.6vw, var(--fs-2xl));
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .read-date {
+    display: block;
+    margin-top: 10px;
+    font-size: var(--fs-sm);
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+  }
+
+  .prose {
+    font-size: var(--fs-body);
+    color: var(--text-main);
+  }
+
+  .prose :global(p) {
+    line-height: 1.95;
+    margin-bottom: 1.3em;
+    text-align: justify;
+  }
+
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* 正文插图：按正文宽度缩放并居中，保留长图高度，保证结构图标签可读 */
+  /* 单张图尺寸在 markdown 里用 style="width: 60%" 控制，100% = 正文栏宽度，高度自动按原比例 */
+  /* 不加边框和圆角：插图为白底结构图，边框会形成一圈多余的外框 */
+  .prose :global(img) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    margin: 1.6em auto;
+    cursor: zoom-in;
+  }
+
+  /* 插图点击放大：全屏遮罩，图自适应视口，可滚轮缩放、拖动平移 */
+  :global(.img-preview) {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.85);
+    overflow: hidden;
+    user-select: none;
+    touch-action: none; /* 拖动平移时不要触发页面滚动 */
+  }
+
+  /* 有作者样式 display 时 [hidden] 会失效，这里显式关掉 */
+  :global(.img-preview[hidden]) {
+    display: none;
+  }
+
+  :global(.img-preview img) {
+    width: auto;
+    height: auto;
+    max-width: min(88vw, 1040px);
+    max-height: 78vh;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    cursor: grab;
+    /* 不加 will-change:transform：会把图锁成合成层位图，缩放时不再重新采样，越放越糊 */
+    -webkit-user-drag: none;
+  }
+
+  /* 关闭按钮：固定遮罩右上角，压在缩放后的图片之上 */
+  :global(.img-preview-close) {
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    line-height: 1;
+    /* 深色底：放大后图片可能铺满屏幕（白底图），浅色按钮会看不见 */
+    color: #f8fafc;
+    background: rgba(15, 23, 42, 0.55);
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+
+  :global(.img-preview-close:hover),
+  :global(.img-preview-close:focus-visible) {
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  /* 图注：小字居中灰，紧跟在图下方 */
+  .prose :global(.caption) {
+    text-align: center;
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+    color: #94a3b8;
+    margin: -1em 0 1.6em;
+  }
+
+  /* 分点列表：跟随正文行距与缩进 */
+  .prose :global(ul) {
+    padding-left: 1.35em;
+    margin: 0 0 1.3em;
+  }
+
+  .prose :global(li) {
+    line-height: 1.95;
+    text-align: justify;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.35em;
+  }
+
+  .prose :global(li::marker) {
+    color: #94a3b8;
+  }
+
+  /* 正文链接：主色，平时无下划线，悬停加深并出现下划线 */
+  .prose :global(a) {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+
+  .prose :global(a:hover) {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* 正文小标题：与左侧目录的锚点一一对应 */
+  .prose :global(h2) {
+    font-family: var(--font-serif);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+    margin: 2.4em 0 0.9em;
+    scroll-margin-top: 32px;
+  }
+
+  .prose :global(h3) {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.5;
+    margin: 1.9em 0 0.7em;
+    scroll-margin-top: 32px;
+  }
+
+  /* 独立成行的公式与主线链路：始终单行不折行，窄屏时横向滚动；居中 */
+  /* MathML 公式（分数、根号等交给浏览器数学排版）居中。
+     注意：千万别在这里写 display —— MathML 靠 UA 样式里的 display: block math
+     激活数学排版，覆写成普通 block 会让 mi/mo/mfrac 退化成普通盒子竖着堆叠。 */
+  .prose :global(.formula math) {
+    width: fit-content;
+    margin-inline: auto;
+  }
+
+  .prose :global(.formula),
+  .prose :global(.roadmap) {
+    text-align: center;
+    white-space: nowrap;
+    overflow-x: auto;
+    font-size: 1.04em;
+    line-height: 2.3;
+    color: #0f172a;
+    margin: 1.4em 0 1.6em;
+  }
+
+  .prose :global(.roadmap) {
+    font-weight: 600;
+  }
+
+  /* 上下标：显式偏移定位，不依赖字体自带的上下标度量 */
+  .prose :global(sub) {
+    vertical-align: -0.25em;
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  .prose :global(sup) {
+    vertical-align: 0.5em;
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  /* 关键句强调：正文里的点睛句 */
+  .prose :global(.highlight) {
+    color: #c0392b;
+    font-weight: 600;
+  }
+
+  @media (max-width: 767px) {
+    .article-card {
+      padding: 24px 20px;
+    }
+
+    .read-nav {
+      margin-bottom: 18px;
+    }
+
+    .read-header {
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+    }
+
+    .prose {
+      font-size: var(--fs-body);
+    }
+  }
+</style>
